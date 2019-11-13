@@ -1,7 +1,6 @@
 'use strict';
 
-let alreadyDone = false;
-let svg, currentGraphic;
+let svg, currentGraphic, timesClicked= 0;
 
 const textAQNS = (value) => {
   let text = "";
@@ -64,6 +63,195 @@ function modelsWells(){
       checkFilters(wells(fileArr),attribs(fileArr));
   }
   generateModelsWellsGraphic();
+}
+
+// Build color scale
+let myColor = d3.scaleLinear()
+  .range(["#00cc66", "#ff0000"])
+  .domain([1,6]);
+
+// create a tooltip
+let tooltip = d3.select("#my_dataviz")
+.append("div")
+.style("opacity", 0)
+.attr("class", "tooltip")
+.style("background-color", "white")
+.style("border", "solid")
+.style("border-width", "2px")
+.style("border-radius", "5px")
+.style("padding", "5px");
+
+let mouseover = function(d) {
+  tooltip
+    .style("opacity", 1)
+  d3.select(this)
+    .style("stroke", "black")
+    .style("opacity", 1)
+}
+let mousemove = function(d) {
+  tooltip
+    .html("Well: "+d.well+"<br>Model: "+d.model+"<br>AQNS Value: "+textAQNS(d.value))
+    .style("left", (d3.mouse(this)[0]) + "px")
+    .style("top", (d3.mouse(this)[1]+300) + "px")
+}
+let mouseleave = function(d) {
+  tooltip
+    .style("opacity", 0)
+  d3.select(this)
+    .style("stroke", "none")
+    .style("opacity", 0.8)
+}
+
+function reOrdering(data,parsed,x,y,myColor){
+
+    let well = data;
+    let order = [];
+    let justTheWell = parsed.filter(function(d,i){ return d.well == well });
+
+    if(timesClicked == 1){
+      justTheWell.sort(function(a,b){
+        return  d3.ascending(a.value,b.value) || d3.descending(a.model,b.model);
+      });
+    }else if(timesClicked == 2){
+      justTheWell.sort(function(a,b){
+        return  d3.descending(a.value,b.value) || d3.descending(a.model,b.model);
+      });
+    }else if(timesClicked == 3){
+        timesClicked = 0;
+        clearGraphicArea();
+        generateModelsWellsGraphic();
+    }
+
+    justTheWell.forEach(function(element,index){
+      order.push(element.model);
+    })
+
+    svg.selectAll("rect")
+      .remove();
+
+    svg.selectAll("rect")
+      .data(justTheWell, function(d) {return d.model+':'+d.well;})
+      .enter()
+      .append("rect")
+      .attr("x", function(d,i) {
+        let xis = (x(d.model) - (x(d.model) - x.bandwidth()*i+1));
+        return xis;
+       })
+      .attr("y", function(d) { return y(d.well) })
+      .attr("width", x.bandwidth() )
+      .attr("height", y.bandwidth() )
+      .style("fill", function(d) { return myColor(d.value)} )
+      .style("stroke-width", 4)
+        .style("stroke", "none")
+        .style("opacity", 0.8)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
+
+      let otherWells = parsed.filter(function(d){ return d.well != well })
+      let wellsArray = wells(fileArr);
+      wellsArray.splice(wellsArray.indexOf(well),1);
+
+      wellsArray.forEach(function(element,index){
+        let filtered = parsed.filter(function(d){ return d.well == element });
+        let result = [];
+
+        order.forEach(function(key) {
+            var found = false;
+            filtered = filtered.filter(function(item) {
+                if(!found && item.model == key) {
+                    result.push(item);
+                    found = true;
+                    return false;
+                } else
+                    return true;
+            })
+        })
+
+        let count=0;
+        svg.selectAll("rect")
+          .data(result, function(d) {return d.model+':'+d.well;})
+          .enter()
+          .append("rect")
+          .attr("x", function(d) {
+            let xis = (x(order[count]) - (x(order[count]) - x.bandwidth()*count+1));
+            count++;
+            return xis;
+          })
+          .attr("y", y(element) )
+          .attr("width", x.bandwidth() )
+          .attr("height", y.bandwidth() )
+          .style("fill", function(d) { return myColor(d.value)} )
+          .style("stroke-width", 4)
+            .style("stroke", "none")
+            .style("opacity", 0.8)
+          .on("mouseover", mouseover)
+          .on("mousemove", mousemove)
+          .on("mouseleave", mouseleave);
+      })
+
+      buildLegend(svg,myColor);
+}
+
+function buildLegend(svg,myColor){
+  // Add title to graph
+  svg.append("text")
+          .attr("x", 0)
+          .attr("y", -50)
+          .attr("text-anchor", "left")
+          .style("font-size", "22px")
+          .text("Models by Wells NQDS Heatmap");
+
+  // Add subtitle to graph
+  svg.append("text")
+          .attr("x", 0)
+          .attr("y", -20)
+          .attr("text-anchor", "left")
+          .style("font-size", "14px")
+          .style("fill", "grey")
+          .style("max-width", 400)
+          .text("Date: "+date(fileArr)+"| Version: "+version(fileArr));
+
+
+  let xRectBuffer = 500;
+  let yRectBuffer = -40;
+  let dataArray   = ['1','2','3','4','5','6'];
+
+  svg.append("g").selectAll("rect")
+          .data(dataArray)
+          .enter()
+          .append("rect")
+          .attr("x",function(d){
+              var spacing = 100;
+              return xRectBuffer+(d-1)*spacing
+          })
+          .attr("y",yRectBuffer)
+          .attr("width", 30)
+          .attr("height", 25)
+          .style("fill", function(d) { return myColor(d)} )
+          .style("stroke-width", 4)
+          .style("stroke", "none")
+          .style("opacity", 0.8);
+
+  let xTextBuffer = 535;
+  let yTextBuffer = -23;
+
+  // Add a title to the legend
+  svg.append("g").selectAll("text")
+        .data(dataArray)
+        .enter()
+        .append("text")
+        .attr("x",function(d){
+          var spacing = 100;
+          return xTextBuffer+(d-1)*spacing;
+        })
+        .attr("y",yTextBuffer)
+        .attr("text-anchor", "left")
+        .style("font-size", "14px")
+        //.style("fill", "black")
+        .text(function(d){
+          return textAQNS(d);
+        });
 }
 
 function generateModelsWellsGraphic(){
@@ -136,76 +324,11 @@ function generateModelsWellsGraphic(){
     .attr('class', 'rowLabels')
     .call(d3.axisLeft(y));
 
-    let click = function(d,i) {
-
-      let well = d;
-      //const orderedParsedModelWells(parsed,d);switch
-      let justTheWell = parsed.filter(function(d){ return d.well == well });
-
-      justTheWell.sort(function(a,b){
-          return  d3.descending(a.value,b.value) || d3.descending(a.model,b.model);
-      });
-
-      let orderedModels = d3.map(justTheWell, function(d){return(d.model)});
-
-      svg.selectAll("rect")
-        .remove();
-        /*.data(justTheWell)
-        .enter()
-        .transition()
-        //.attr("x", function(d,i) { console.log(d.model) })
-        .attr("width", x.bandwidth() )
-        .attr("height", y.bandwidth() )
-        .style("fill", function(d) { return myColor(d.value)} )
-        .attr("x", function(d,i) { return x(d.model) - (x(d.model) - x.bandwidth()*i) })
-        .attr("y", function(d) { return y(d.well) })
-        .style("stroke-width", 4)
-          .style("stroke", "none")
-          .style("opacity", 0.8)
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave)
-        .duration(10000);
-        .attr("x",  x(justTheWell.model) - (x(justTheWell.model) - (orderedModels.indexOf(justTheWell.model)*x.bandwidth()) ));*/
-
-      svg.selectAll("rect")
-        .data(justTheWell)
-        .enter()
-        .append("rect")
-        .attr("x", function(d,i) { return x(d.model) - (x(d.model) - x.bandwidth()*i) })
-        .attr("y", function(d) { return y(d.well) })
-        .attr("width", x.bandwidth() )
-        .attr("height", y.bandwidth() )
-        .style("fill", function(d) { return myColor(d.value)} )
-        .style("stroke-width", 4)
-          .style("stroke", "none")
-          .style("opacity", 0.8)
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
-
-        let otherWells = parsed.filter(function(d){ return d.well != well })
-        console.log(otherWells);
-
-      svg.selectAll("rect")
-        .data(otherWells)
-        .enter()
-        .append("rect")
-        .attr("x", function(d,i) { return x(d.model) - (x(d.model) - x.bandwidth()*i )})
-        .attr("y", function(d) { return y(d.well) })
-        .attr("width", x.bandwidth() )
-        .attr("height", y.bandwidth() )
-        .style("fill", function(d) { return myColor(d.value)} )
-        .style("stroke-width", 4)
-          .style("stroke", "none")
-          .style("opacity", 0.8)
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
-    }
-
   d3.selectAll('.tick')
-    .on("click",click)
+    .on("click", function (d) {
+      timesClicked++;
+      reOrdering(d,parsed,x,y,myColor);
+    })
     .on("mouseover", function (d){
       d3.select(this).attr('font-weight', 'bold').style('fill', 'red');
       d3.select(this).style('cursor', 'pointer');
@@ -215,43 +338,7 @@ function generateModelsWellsGraphic(){
       d3.select(this).style('cursor', 'default');
 		});
 
-  // Build color scale
-  let myColor = d3.scaleLinear()
-    .range(["#00cc66", "#ff0000"])
-    .domain([1,6]);
-
-    // create a tooltip
-  var tooltip = d3.select("#my_dataviz")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px");
-
   // Three function that change the tooltip when user hover / move / leave a cell
-  let mouseover = function(d) {
-    tooltip
-      .style("opacity", 1)
-    d3.select(this)
-      .style("stroke", "black")
-      .style("opacity", 1)
-  }
-  let mousemove = function(d) {
-    tooltip
-      .html("Well: "+d.well+"<br>Model: "+d.model+"<br>AQNS Value: "+textAQNS(d.value))
-      .style("left", (d3.mouse(this)[0]) + "px")
-      .style("top", (d3.mouse(this)[1]+300) + "px")
-  }
-  let mouseleave = function(d) {
-    tooltip
-      .style("opacity", 0)
-    d3.select(this)
-      .style("stroke", "none")
-      .style("opacity", 0.8)
-  }
 
   svg.selectAll()
     .data(parsed, function(d) {return d.model+':'+d.well;})
@@ -269,64 +356,7 @@ function generateModelsWellsGraphic(){
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
 
-  // Add title to graph
-  svg.append("text")
-          .attr("x", 0)
-          .attr("y", -50)
-          .attr("text-anchor", "left")
-          .style("font-size", "22px")
-          .text("Models by Wells NQDS Heatmap");
-
-  // Add subtitle to graph
-  svg.append("text")
-          .attr("x", 0)
-          .attr("y", -20)
-          .attr("text-anchor", "left")
-          .style("font-size", "14px")
-          .style("fill", "grey")
-          .style("max-width", 400)
-          .text("Date: "+date(fileArr)+"| Version: "+version(fileArr));
-
-
-  let xRectBuffer = 500;
-  let yRectBuffer = -40;
-  let dataArray   = ['1','2','3','4','5','6'];
-
-  svg.append("g").selectAll("rect")
-          .data(dataArray)
-          .enter()
-          .append("rect")
-          .attr("x",function(d){
-              var spacing = 100;
-              return xRectBuffer+(d-1)*spacing
-          })
-          .attr("y",yRectBuffer)
-          .attr("width", 30)
-          .attr("height", 25)
-          .style("fill", function(d) { return myColor(d)} )
-          .style("stroke-width", 4)
-          .style("stroke", "none")
-          .style("opacity", 0.8);
-
-  let xTextBuffer = 535;
-  let yTextBuffer = -23;
-
-  // Add a title to the legend
-  svg.append("g").selectAll("text")
-        .data(dataArray)
-        .enter()
-        .append("text")
-        .attr("x",function(d){
-          var spacing = 100;
-          return xTextBuffer+(d-1)*spacing;
-        })
-        .attr("y",yTextBuffer)
-        .attr("text-anchor", "left")
-        .style("font-size", "14px")
-        //.style("fill", "black")
-        .text(function(d){
-          return textAQNS(d);
-        });
+    buildLegend(svg,myColor)
 
     document.getElementById("exportImage").removeAttribute("hidden");
 }

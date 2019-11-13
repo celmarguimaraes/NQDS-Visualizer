@@ -3,7 +3,7 @@
 const leitorDeCSV = new FileReader()
 let file, fileArr, rawData;
 let fileLine = [];
-let alreadyGenerated = false;
+let alreadyDone = false;
 
 	window.onload = function init() {
 		leitorDeCSV.onload = readFile;
@@ -12,6 +12,13 @@ let alreadyGenerated = false;
 function pegaCSV(inputFile) {
      file = inputFile.files[0];
      leitorDeCSV.readAsText(file);
+		 clearGraphicArea();
+ 	 	 document.getElementById('titleFilters').innerHTML = "";
+		 document.getElementById('filters-1').innerHTML = "";
+		 document.getElementById('filters-2').innerHTML = "";
+		 document.getElementById('buttonFilter').innerHTML = "";
+		 document.getElementById('exportImage').hidden = true;
+		 alreadyDone = false;
 }
 
 function readFile(evt) {

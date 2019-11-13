@@ -10,7 +10,6 @@
     <title>NQDS Dashboard</title>
 
     <!-- Principal CSS do Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/main.css">
 
@@ -22,28 +21,37 @@
       <div class="btn-toolbar p-0 m-0">
         <div class="btn-group btn-group-toggle px-5 mr-5" data-toggle="buttons" id="buttonGroup" hidden>
             <button type="button" id="MxW" class="btn btn-secondary" onclick="modelsWells();">Model x Wells</button>
-            <button type="button" id="MxA" class="btn btn-secondary" >Model x Attributes</button>
+            <button type="button" id="MxA" class="btn btn-secondary" onclick="modelsAttributes();" >Model x Attributes</button>
             <button type="button" id="WxA" class="btn btn-secondary">Wells x Attributes</button>
         </div>
         <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Selecionar Arquivo</label>
         <input type="file" id="inputCSV" onchange="pegaCSV(this)">
       </div>
     </header>
-    <div class="row"><br>
-      <div class="col-6 border-right border-bottom" id="filters-1"></div>
-      <div class="col-6 border-left border-bottom" id="filters-2"></div>
+    <div class="row border"><br>
+      <div class="row col-12" id="titleFilters"></div>
+      <div class="col-6" id="filters-1"></div>
+      <div class="col-6" id="filters-2"></div>
       <br><br>
+    <div class="row border-bottom col-12" id="buttonFilter"></div>
     </div>
-    <div class="row " id="buttonFilter"></div>
-      <div id="my_dataviz" height="0px"></div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <div id="my_dataviz" height="0px"></div>
+    <div class="row">
+      <div class='col-5'></div>
+      <button type='button' class='btn btn-secondary tent-center col-2 mt-2 mb-2' hidden id="exportImage">Export as Image</button>
+      <div class='col-5'></div>
+    </div>
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
   	<script src="js/loadData.js"></script>
-    <script src="https://d3js.org/d3.v4.js"></script>
-  	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="js/filters.js"></script>
-  	<script src="js/graphic.js"></script>
+    <script src="js/d3.v4.js"></script>
+  	<script src="js/d3-scale-chromatic.v1.min.js"></script>
+    <script src="js/filtersModelsWells.js"></script>
+    <script src="js/filtersModelsAttributes.js"></script>
+  	<script src="js/modelsWellsGraphic.js"></script>
+    <script src="js/modelsAttributesGraphic.js"></script>
+    <script src="js/saveSvgAsPng.js"></script>
+    <script src="js/saveImage.js"></script>
   </body>
 </html>

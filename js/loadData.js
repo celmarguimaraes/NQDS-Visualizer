@@ -3,6 +3,7 @@
 const leitorDeCSV = new FileReader()
 let file, fileArr, rawData;
 let fileLine = [];
+let alreadyGenerated = false;
 
 	window.onload = function init() {
 		leitorDeCSV.onload = readFile;
@@ -16,18 +17,6 @@ function pegaCSV(inputFile) {
 function readFile(evt) {
 	rawData = evt.target.result;
   fileArr = evt.target.result.split('\n');
-  /*let strDiv = "";
-
-  for (var i=0; i<2; i++) {
-       var fileLine = fileArr[i].split(';');
-			 strDiv += "<dt class='col-1'>"
-       strDiv += fileLine[0];
-       strDiv += '</dt>';
-			 strDiv += "<dd class='col-5'>"+fileLine[1]+"</dd>";
-  }
-
-      let cabecalho = document.getElementById('cabecalho');
-      cabecalho.innerHTML = strDiv;*/
 			document.getElementById("buttonGroup").removeAttribute("hidden");
 }
 
@@ -42,41 +31,32 @@ const version = fileArr => {
 }
 
 const models = fileArr => {
-  let contador = 0;
-  let modelGroup = [];
-  for (var i=3; i < fileArr.length; i++) {
-       let fileLinePrev = fileLine;
+	let modelGroup = [];
+  for (var i=3; i < fileArr.length-1; i++) {
        fileLine = fileArr[i].split(';');
-       if (fileLine[1] !== fileLinePrev[1]){
-         if (i != 3){
-           modelGroup[contador] = fileLinePrev[1];
-           contador++;
-         }
-       }
+			 modelGroup[i-3] = fileLine[1];
   }
-  return modelGroup;
+  return d3.set(modelGroup).values();
 }
 
-const attribs = ['QL','QW','QO','BHP','QWI']
-
-const wells = fileArr => {
-  let contador = 0;
-  let wellGroup = [];
-	let wellGroupFiltered = [];
+const attribs = fileArr =>{
+	let attribGroup = [];
   for (let i=3; i < fileArr.length-1; i++) {
        fileLine = fileArr[i].split(';');
        const fileLineCols = fileLine[2].split(' ');
-       if(i===3){
-         wellGroup.push(fileLineCols[3]);
-         contador++;
-       }else{
-				 	   if (wellGroup.indexOf(fileLineCols[3]) === -1){
-							 wellGroup.push(fileLineCols[3]);
-							 contador++;
-						 }
-       }
+       attribGroup.push(fileLineCols[1]);
   }
-	return wellGroup;
+	return d3.set(attribGroup).values();
+}
+
+const wells = fileArr => {
+	let wellGroup = [];
+  for (let i=3; i < fileArr.length-1; i++) {
+       fileLine = fileArr[i].split(';');
+       const fileLineCols = fileLine[2].split(' ');
+       wellGroup.push(fileLineCols[3]);
+  }
+	return d3.set(wellGroup).values();
 }
 
 const aqns = fileArr => {
@@ -104,4 +84,28 @@ const normalizedAqns = aqns => {
 				 aqnsNormalized = 6;
 			 }
 	return aqnsNormalized;
+}
+
+// Fix exponential numberColumnsHeader
+function toFixed(x) {
+  if (Math.abs(x) < 1.0) {
+    var e = parseInt(x.toString().split('E-')[1]);
+    if (e) {
+        x *= Math.pow(10,e-1);
+        x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
+    }
+  } else {
+    var e = parseInt(x.toString().split('+')[1]);
+    if (e > 20) {
+        e -= 20;
+        x /= Math.pow(10,e);
+        x += (new Array(e+1)).join('0');
+    }
+  }
+  return x;
+}
+
+//Transform the AQNS value in the CSV in an float and unsigned number
+const fixAqns = aqns => {
+  return parseFloat(toFixed(aqns.substring(0,1)==='-'?aqns.substring(1):aqns));
 }

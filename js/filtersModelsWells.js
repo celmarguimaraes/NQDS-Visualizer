@@ -55,6 +55,7 @@ const filteredAttribsMW = (fileArr,checkAttribs,attribs) => {
   return newCsv;
 }
 
+//Filter of selected wells
 const filteredWellMW = (fileArr,checkWells,filter1) => {
   const splitCSV = filter1.split('\n');
   const wellsV = wells(fileArr);
@@ -76,6 +77,7 @@ const filteredWellMW = (fileArr,checkWells,filter1) => {
   return newCSV;
 }
 
+//Filter of selected models
 const filteredModelMW = (fileArr,maxRangeModels,minRangeModels,filter2) => {
   const splitCSV = filter2.split('\n');
   const modelsV = wells(models);

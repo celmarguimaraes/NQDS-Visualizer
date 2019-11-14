@@ -1,52 +1,13 @@
 'use strict';
 
-let svg, currentGraphic, timesClicked= 0;
+// set the dimensions and margins of the graph
+let margin = {top: 90, right: 0, bottom: 100, left: 60},
+  width = 1200 - margin.left - margin.right,
+  height = 480 - margin.top - margin.bottom;
 
-//Changes the text or number to text value for the tooltip in the graphic
-const textAQNS = (value) => {
-  let text = "";
-  switch (value) {
-    case '1':
-        text += "Excelent"
-        break;
-    case '2':
-        text += "Very Good"
-        break;
-    case '3':
-        text += "Good"
-        break;
-    case '4':
-        text += "Regular"
-        break;
-    case '5':
-        text += "Bad"
-        break;
-    case '6':
-        text += "Unsatisfactory"
-        break;
-    case 1:
-        text += "Excelent"
-        break;
-    case 2:
-        text += "Very Good"
-        break;
-    case 3:
-        text += "Good"
-        break;
-    case 4:
-        text += "Regular"
-        break;
-    case 5:
-        text += "Bad"
-        break;
-    case 6:
-        text += "Unsatisfactory"
-        break;
-  }
-  return text;
-}
+let myGroups,myVars;
 
-function modelsWells(){
+function wellsAttributes(){
 
   if(alreadyDone == true){
       hideFilters();
@@ -59,45 +20,29 @@ function modelsWells(){
   filtros2.innerHTML = strFiltros2(models(fileArr),attribs(fileArr));
   let button= document.getElementById('buttonFilter');
   button.innerHTML = (buttonFilter());
-  setRange();
+  setRange(true);
 
   checkFilters(wells(fileArr),attribs(fileArr));
 
-  currentGraphic = "modelsWells";
-  generateModelsWellsGraphic();
+  currentGraphic = "wellsAttributes";
+  generateWellsAttributesGraphic();
 }
 
-// Build color scale
-let myColor = d3.scaleLinear()
-  .range(["#00cc66", "#ff0000"])
-  .domain([1,6]);
-
-// create a tooltip
-let tooltip = d3.select("#my_dataviz")
-.append("div")
-.style("opacity", 0)
-.attr("class", "tooltip")
-.style("background-color", "white")
-.style("border", "solid")
-.style("border-width", "2px")
-.style("border-radius", "5px")
-.style("padding", "5px");
-
 // Three function that change the tooltip when user hover / move / leave a cell
-let mouseover = function(d) {
+let mouseoverWA = function(d) {
   tooltip
     .style("opacity", 1)
   d3.select(this)
     .style("stroke", "black")
     .style("opacity", 1)
 }
-let mousemove = function(d) {
+let mousemoveWA = function(d) {
   tooltip
-    .html("Well: "+d.well+"<br>Model: "+d.model+"<br>AQNS Value: "+textAQNS(d.value))
+    .html("Well: "+d.well+"<br>Attribute: "+textAttrib(d.attribute)+"<br>AQNS Value: "+textAQNS(normalizedAqns(fixAqns((d.value)))))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
 }
-let mouseleave = function(d) {
+let mouseleaveWA = function(d) {
   tooltip
     .style("opacity", 0)
   d3.select(this)
@@ -106,33 +51,33 @@ let mouseleave = function(d) {
 }
 
 //Reorder the heatmap by the click in the row of the graphic
-function reOrderingMW(data,parsed,x,y,myColor){
+function reOrderingWA(data,parsed,x,y,myColor){
 
-    let well = data;
+    let attrib = data;
     let order = [];
-    let justTheWell = parsed.filter(function(d,i){ return d.well == well });
+    let justTheAttrib = parsed.filter(function(d,i){ return d.attribute == attrib });
 
     //Calculate times clicked to alter the sort order
     // 1 time - Ascendent
     // 2 times - Descendent
     // 3 times - Normal Visualization
     if(timesClicked == 1){
-      justTheWell.sort(function(a,b){
-        return  d3.ascending(a.value,b.value) || d3.descending(a.model,b.model);
+      justTheAttrib.sort(function(a,b){
+        return  d3.ascending(fixAqns(a.value),fixAqns(b.value)) || d3.descending(a.well,b.well);
       });
     }else if(timesClicked == 2){
-      justTheWell.sort(function(a,b){
-        return  d3.descending(a.value,b.value) || d3.descending(a.model,b.model);
+      justTheAttrib.sort(function(a,b){
+        return  d3.descending(fixAqns(a.value),fixAqns(b.value)) || d3.descending(a.well,b.well);
       });
     }else if(timesClicked == 3){
         timesClicked = 0;
         clearGraphicArea();
-        generateModelsWellsGraphic();
+        generateWellsAttributesGraphic();
         return false;
     }
 
-    justTheWell.forEach(function(element,index){
-      order.push(element.model);
+    justTheAttrib.forEach(function(element,index){
+      order.push(element.well);
     })
 
     //Remove all rectangles
@@ -141,24 +86,23 @@ function reOrderingMW(data,parsed,x,y,myColor){
 
     //Build only the line of the well clicked
     svg.selectAll("rect")
-      .data(justTheWell, function(d) {return d.model+':'+d.well;})
+      .data(justTheAttrib, function(d) {return d.well+':'+d.attribute;})
       .enter()
       .append("rect")
       .attr("x", function(d,i) {
-        let xis = (x(d.model) - (x(d.model) - x.bandwidth()*i+1));
+        let xis = (x(d.well) - (x(d.well) - x.bandwidth()*i+1));
         return xis;
        })
-      .style("padding",0.01)
-      .attr("y", function(d) { return y(d.well) })
+      .attr("y", function(d) { return y(d.attribute) })
       .attr("width", x.bandwidth() )
       .attr("height", y.bandwidth() )
-      .style("fill", function(d) { return myColor(d.value)} )
+      .style("fill", function(d) { return myColor(normalizedAqns(fixAqns(d.value)))} )
       .style("stroke-width", 4)
         .style("stroke", "none")
         .style("opacity", 0.8)
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+      .on("mouseover", mouseoverWA)
+      .on("mousemove", mousemoveWA)
+      .on("mouseleave", mouseleaveWA);
 
       d3.selectAll(".axis")
       .remove();
@@ -168,7 +112,7 @@ function reOrderingMW(data,parsed,x,y,myColor){
       // set the dimensions and margins of the graph
       let margin = {top: 90, right: 0, bottom: 100, left: 60},
         width = 1200 - margin.left - margin.right,
-        height = 620 - margin.top - margin.bottom;
+        height = 480 - margin.top - margin.bottom;
 
       // Build X scales and axis:
       let xx = d3.scaleBand()
@@ -189,21 +133,20 @@ function reOrderingMW(data,parsed,x,y,myColor){
       d3.selectAll(".axis")
       .style("font","13px sans-serif");
 
+      let otherWells = parsed.filter(function(d){ return d.attribute != attrib })
+      let attribsArray = attribs(fileArr);
+      attribsArray.splice(attribsArray.indexOf(attrib),1);
 
-      let otherWells = parsed.filter(function(d){ return d.well != well })
-      let wellsArray = wells(fileArr);
-      wellsArray.splice(wellsArray.indexOf(well),1);
-
-      // For each row's well that isn`t clicked
-      wellsArray.forEach(function(element,index){
-        let filtered = parsed.filter(function(d){ return d.well == element });
+      // For each row's attrib that isn`t clicked
+      attribsArray.forEach(function(element,index){
+        let filtered = parsed.filter(function(d){ return d.attribute === element });
         let result = [];
 
         //Order the columns according to the order of the line clicked
         order.forEach(function(key) {
             var found = false;
             filtered = filtered.filter(function(item) {
-                if(!found && item.model == key) {
+                if(!found && item.well == key) {
                     result.push(item);
                     found = true;
                     return false;
@@ -212,10 +155,10 @@ function reOrderingMW(data,parsed,x,y,myColor){
             })
         })
 
-        //Build all the other well lines following the order constructed above
+        //Build all the other attrib lines following the order constructed above
         let count=0;
         svg.selectAll("rect")
-          .data(result, function(d) {return d.model+':'+d.well;})
+          .data(result, function(d) {return d.well+':'+d.attribute;})
           .enter()
           .append("rect")
           .attr("x", function(d) {
@@ -223,31 +166,30 @@ function reOrderingMW(data,parsed,x,y,myColor){
             count++;
             return xis;
           })
-          .style("padding",0.01)
           .attr("y", y(element) )
           .attr("width", x.bandwidth() )
           .attr("height", y.bandwidth() )
-          .style("fill", function(d) { return myColor(d.value)} )
+          .style("fill", function(d) { return myColor(normalizedAqns(fixAqns(d.value)))} )
           .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)
-          .on("mouseover", mouseover)
-          .on("mousemove", mousemove)
-          .on("mouseleave", mouseleave);
+          .on("mouseover", mouseoverWA)
+          .on("mousemove", mousemoveWA)
+          .on("mouseleave", mouseleaveWA);
       })
 
       //Rebuild the legend
-      buildLegendMW(svg,myColor);
+      buildLegendWA(svg,myColor);
 }
 
-function buildLegendMW(svg,myColor){
+function buildLegendWA(svg,myColor){
   // Add title to graph
   svg.append("text")
           .attr("x", 0)
           .attr("y", -50)
           .attr("text-anchor", "left")
           .style("font-size", "22px")
-          .text("Wells by Models NQDS Heatmap");
+          .text("Wells by Attributes NQDS Heatmap");
 
   // Add subtitle to graph
   svg.append("text")
@@ -302,19 +244,9 @@ function buildLegendMW(svg,myColor){
         });
 }
 
-function generateModelsWellsGraphic(){
+function generateWellsAttributesGraphic(){
 
   alreadyDone = true;
-
-  let checkAttribs = [];
-
-  for(let i=0;i<attribs(fileArr).length;i++){
-    const attribsV = attribs(fileArr);
-    checkAttribs.push(document.getElementById(attribsV[i]).checked);
-  }
-
-  //Apply filter of attributes
-  const filter1 = filteredAttribsMW(fileArr,checkAttribs,attribs(fileArr));
 
   let checkWells = [];
 
@@ -323,22 +255,26 @@ function generateModelsWellsGraphic(){
     checkWells.push(document.getElementById(wellsV[i]).checked);
   }
 
-  //Apply filter of wells
-  const filter2 = filteredWellMW(fileArr,checkWells,filter1);
+  let checkAttribs = [];
+
+  for(let i=0;i<attribs(fileArr).length;i++){
+    const attribsV = attribs(fileArr);
+    checkAttribs.push(document.getElementById(attribsV[i]).checked);
+  }
 
   const maxRangeModels = document.getElementById('maxRangeModels').value;
   const minRangeModels = document.getElementById('minRangeModels').value;
 
-  //Apply filter range of models
-  const filter3 = filteredModelMW(fileArr,maxRangeModels,minRangeModels,filter2);
+  //Apply all filters once
+  const filter = allFiltersWA(buildCSV(fileArr),checkWells,wells(fileArr),checkAttribs,attribs(fileArr), maxRangeModels, minRangeModels,models(fileArr));
 
   //Generates a new CSV depending on the filters and parse it on an object
-  const parsed = d3.csvParse(filter3);
+  const parsed = d3.csvParse(filter);
 
   // set the dimensions and margins of the graph
   let margin = {top: 90, right: 0, bottom: 100, left: 60},
     width = 1200 - margin.left - margin.right,
-    height = 620 - margin.top - margin.bottom;
+    height = 480 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   svg = d3.select("#my_dataviz")
@@ -351,8 +287,8 @@ function generateModelsWellsGraphic(){
       "translate(" + margin.left + "," + margin.top + ")");
 
   // Labels of row and columns
-  let myGroups = parsed.map(newCsv => newCsv.model);
-  let myVars = parsed.map(newCsv => newCsv.well);
+  myGroups = parsed.map(newCsv => newCsv.well);
+  myVars = parsed.map(newCsv => newCsv.attribute);
 
   // Build X scales and axis:
   let x = d3.scaleBand()
@@ -374,7 +310,7 @@ function generateModelsWellsGraphic(){
   d3.selectAll('.tick')
     .on("click", function (d) {
       timesClicked++;
-      reOrderingMW(d,parsed,x,y,myColor);
+      reOrderingWA(d,parsed,x,y,myColor);
     })
     .on("mouseover", function (d){
       d3.select(this).attr('font-weight', 'bold').style('fill', 'red');
@@ -402,22 +338,22 @@ function generateModelsWellsGraphic(){
 
   //Construct the graphic
   svg.selectAll()
-    .data(parsed, function(d) {return d.model+':'+d.well;})
+    .data(parsed, function(d) {return d.attribute+':'+d.well;})
     .enter()
     .append("rect")
-    .attr("x", function(d) { return x(d.model) })
-    .attr("y", function(d) { return y(d.well) })
+    .attr("x", function(d) { return x(d.well) })
+    .attr("y", function(d) { return y(d.attribute) })
     .attr("width", x.bandwidth() )
     .attr("height", y.bandwidth() )
-    .style("fill", function(d) { return myColor(d.value)} )
+    .style("fill", function(d) { return myColor(normalizedAqns(fixAqns(d.value)))} )
     .style("stroke-width", 4)
       .style("stroke", "none")
       .style("opacity", 0.8)
-    .on("mouseover", mouseover)
-    .on("mousemove", mousemove)
-    .on("mouseleave", mouseleave);
+    .on("mouseover", mouseoverWA)
+    .on("mousemove", mousemoveWA)
+    .on("mouseleave", mouseleaveWA);
 
-    buildLegendMW(svg,myColor)
+    buildLegendWA(svg,myColor)
 
     //Set visible the button to export image of the graphic
     document.getElementById("exportImage").removeAttribute("hidden");

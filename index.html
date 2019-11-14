@@ -20,9 +20,9 @@
       <h1 class="h2 pr-5 mr-5">NQDS Heatmap</h1>
       <div class="btn-toolbar p-0 m-0">
         <div class="btn-group btn-group-toggle px-5 mr-5" data-toggle="buttons" id="buttonGroup" hidden>
-            <button type="button" id="MxW" class="btn btn-secondary" onclick="modelsWells();">Model x Wells</button>
-            <button type="button" id="MxA" class="btn btn-secondary" onclick="modelsAttributes();" >Model x Attributes</button>
-            <button type="button" id="WxA" class="btn btn-secondary">Wells x Attributes</button>
+            <button type="button" id="MxW" class="btn btn-secondary" onclick="modelsWells();">Wells x Models</button>
+            <button type="button" id="MxA" class="btn btn-secondary" onclick="modelsAttributes();" >Attributes x Models</button>
+            <button type="button" id="WxA" class="btn btn-secondary" onclick="wellsAttributes();">Wells x Attributes</button>
         </div>
         <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Selecionar Arquivo</label>
         <input type="file" id="inputCSV" onchange="pegaCSV(this)">
@@ -50,8 +50,10 @@
   	<script src="js/d3-scale-chromatic.v1.min.js"></script>
     <script src="js/filtersModelsWells.js"></script>
     <script src="js/filtersModelsAttributes.js"></script>
+    <script src="js/filtersWellsAttributes.js"></script>
   	<script src="js/modelsWellsGraphic.js"></script>
     <script src="js/modelsAttributesGraphic.js"></script>
+    <script src="js/wellsAttributesGraphic.js"></script>
     <script src="js/saveSvgAsPng.js"></script>
     <script src="js/saveImage.js"></script>
   </body>

@@ -12,13 +12,7 @@ let alreadyDone = false;
 function pegaCSV(inputFile) {
      file = inputFile.files[0];
      leitorDeCSV.readAsText(file);
-		 clearGraphicArea();
- 	 	 document.getElementById('titleFilters').innerHTML = "";
-		 document.getElementById('filters-1').innerHTML = "";
-		 document.getElementById('filters-2').innerHTML = "";
-		 document.getElementById('buttonFilter').innerHTML = "";
-		 document.getElementById('exportImage').hidden = true;
-		 alreadyDone = false;
+		 hideFilters();
 }
 
 function readFile(evt) {

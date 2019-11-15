@@ -247,7 +247,7 @@ function buildLegendMW(svg,myColor){
           .attr("y", -50)
           .attr("text-anchor", "left")
           .style("font-size", "22px")
-          .text("Wells by Models NQDS Heatmap");
+          .text("Wells by Models NQDS Heatmap - Iteration "+iteration(fileArr));
 
   // Add subtitle to graph
   svg.append("text")

@@ -74,7 +74,7 @@ function buildLegendMA(svg,myColor){
           .attr("y", -50)
           .attr("text-anchor", "left")
           .style("font-size", "22px")
-          .text("Attributes by Models NQDS Heatmap");
+          .text("Attributes by Models NQDS Heatmap - Iteration "+iteration(fileArr));
 
   // Add subtitle to graph
   svg.append("text")
@@ -287,6 +287,8 @@ function generateModelsAttributesGraphic(){
 
   //Generates a new CSV depending on the filters and parse it on an object
   const parsed = d3.csvParse(filter);
+
+  console.log(parsed);
 
   // set the dimensions and margins of the graph
   let margin = {top: 90, right: 0, bottom: 90, left: 60},

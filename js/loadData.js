@@ -31,6 +31,10 @@ const version = fileArr => {
 	return fileLine[1];
 }
 
+const iteration = fileArr => {
+	let fileLine = fileArr[3].split(';');
+	return fileLine[0];
+}
 const models = fileArr => {
 	let modelGroup = [];
   for (var i=3; i < fileArr.length-1; i++) {

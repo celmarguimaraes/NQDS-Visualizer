@@ -17,7 +17,7 @@ const buildCSV = fileArr =>{
 
 //Apply all filters once and builds a CSV
 const allFilters = (csv,checkWells,wells,checkAttribs,attribs, maxRangeModels, minRangeModels, models) =>{
-
+  console.log(csv);
   let realAtt = [];
   let realWell;
   let realModel = [];
@@ -61,8 +61,6 @@ const allFilters = (csv,checkWells,wells,checkAttribs,attribs, maxRangeModels, m
     realAtt = realAtt.filter(function(element){
       return element === 'QL' || element ==='QW' || element === 'QO' || element === 'BHP';
   })}
-
-  console.log(realAtt);
 
   //Filter - for each attribute and well in N models build a CSV line
   for(let i=0;i<realModel.length;i++){

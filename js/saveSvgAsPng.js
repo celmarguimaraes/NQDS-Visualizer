@@ -314,8 +314,8 @@
       const context = canvas.getContext('2d');
       const pixelRatio = window.devicePixelRatio || 1;
 
-      canvas.width = width * pixelRatio;
-      canvas.height = height * pixelRatio;
+      canvas.width = width * pixelRatio ;
+      canvas.height = height * pixelRatio ;
       canvas.style.width = `${canvas.width}px`;
       canvas.style.height = `${canvas.height}px`;
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);

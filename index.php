@@ -12,20 +12,28 @@
     <!-- Principal CSS do Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/main.css">
-
+    <?php include 'main/modal.php'?>
+    
+    <script>
+      let primeiroGrafico = true;
+      let tipoGrafico;
+      let versaoGraf,iteracaoGraf;
+    </script>
   </head>
 
   <body>
+  
     <header class="navbar border-bottom mt-2">
       <h1 class="h2 pr-5 mr-5">NQDS Heatmap</h1>
       <div class="btn-toolbar p-0 m-0">
         <div class="btn-group btn-group-toggle px-5 mr-5" data-toggle="buttons" id="buttonGroup" hidden>
-            <button type="button" id="MxW" class="btn btn-secondary" onclick="modelsWells();">Wells x Models</button>
-            <button type="button" id="MxA" class="btn btn-secondary" onclick="modelsAttributes();" >Attributes x Models</button>
-            <button type="button" id="WxA" class="btn btn-secondary" onclick="wellsAttributes();">Wells x Attributes</button>
+            <button type="button" id="MxW" class="btn btn-secondary" onclick="selecionarGrafico('MW')">Wells x Models</button>
+            <button type="button" id="MxA" class="btn btn-secondary" onclick="selecionarGrafico('MA')" >Attributes x Models</button>
+            <button type="button" id="WxA" class="btn btn-secondary" onclick="selecionarGrafico('WA')">Wells x Attributes</button>
         </div>
-        <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Select File</label>
+        <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Upload New File</label>
         <input type="file" id="inputCSV" onchange="pegaCSV(this)">
+        <button type="button" class="btn btn-primary btn-ig ml-3 mb-0" data-toggle="modal" data-target="#modalVersion">Select Version</button>
       </div>
     </header>
     <div class="row border"><br>
@@ -42,19 +50,15 @@
       <button type='button' class='btn btn-secondary tent-center col-2 mt-2 mb-2' hidden id="exportImage">Export as Image</button>
       <div class='col-5'></div>
     </div>
-    <script src="js/jquery-3.3.1.slim.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-  	<script src="js/loadData.js"></script>
-    <script src="js/filters.js"></script>
-    <script src="js/d3.v4.js"></script>
-  	<script src="js/d3-scale-chromatic.v1.min.js"></script>
-    <script src="js/filtersModelsWells.js"></script>
-    <script src="js/filtersModelsAttributes.js"></script>
-    <script src="js/filtersWellsAttributes.js"></script>
-  	<script src="js/modelsWellsGraphic.js"></script>
-    <script src="js/modelsAttributesGraphic.js"></script>
-    <script src="js/wellsAttributesGraphic.js"></script>
-    <script src="js/saveSvgAsPng.js"></script>
-    <script src="js/saveImage.js"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.slim.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/d3.v4.js"></script>
+    <script type="text/javascript" src="js/d3-scale-chromatic.v1.min.js"></script>
+    <script type="text/javascript" src="js/loadData.js"></script>
+    <script type="text/javascript" src="js/filters.js"></script>
+    <script type="text/javascript" src="js/gerarGrafico.js"></script>
+    <script type="text/javascript" src="js/saveSvgAsPng.js"></script>
+    <script type="text/javascript" src="js/saveImage.js"></script>
+    <script type="text/javascript" src="js/consultaGrafico.js"></script>
   </body>
 </html>

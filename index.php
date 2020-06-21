@@ -7,33 +7,34 @@
     <meta name="author" content="">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <title>NQDS Dashboard</title>
+    <title>Heatmap AQNS</title>
 
     <!-- Principal CSS do Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <?php include 'main/modal.php'?>
+    <?php include 'main/modalAguarde.php'?>
     
     <script>
       let primeiroGrafico = true;
       let tipoGrafico;
-      let versaoGraf,iteracaoGraf;
+      let versaoGraf,iteracaoGraf, dataGraf;
     </script>
   </head>
 
   <body>
   
     <header class="navbar border-bottom mt-2">
-      <h1 class="h2 pr-5 mr-5">NQDS Heatmap</h1>
+      <h1 class="h2 pr-5 mr-5">AQNS Heatmap</h1>
       <div class="btn-toolbar p-0 m-0">
-        <div class="btn-group btn-group-toggle px-5 mr-5" data-toggle="buttons" id="buttonGroup" hidden>
-            <button type="button" id="MxW" class="btn btn-secondary" onclick="selecionarGrafico('MW')">Wells x Models</button>
-            <button type="button" id="MxA" class="btn btn-secondary" onclick="selecionarGrafico('MA')" >Attributes x Models</button>
-            <button type="button" id="WxA" class="btn btn-secondary" onclick="selecionarGrafico('WA')">Wells x Attributes</button>
+        <div class="btn-group btn-group px-5 mr-5" id="buttonGroup" hidden>
+            <button type="button" id="MxW" class="btn btn-secondary" onclick="selecionarGrafico('MW')">Poços x Modelos</button>
+            <button type="button" id="MxA" class="btn btn-secondary" onclick="selecionarGrafico('MA')" >Atributos x Modelos</button>
+            <button type="button" id="WxA" class="btn btn-secondary" onclick="selecionarGrafico('WA')">Poços x Atributos</button>
         </div>
-        <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Upload New File</label>
+        <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Subir novo arquivo</label>
         <input type="file" id="inputCSV" onchange="pegaCSV(this)">
-        <button type="button" class="btn btn-primary btn-ig ml-3 mb-0" data-toggle="modal" data-target="#modalVersion">Select Version</button>
+        <button type="button" class="btn btn-primary btn-ig ml-3 mb-0" data-toggle="modal" data-target="#modalVersion">Selecionar Versão</button>
       </div>
     </header>
     <div class="row border"><br>
@@ -47,7 +48,7 @@
     <div id="my_dataviz" height="0px"></div>
     <div class="row">
       <div class='col-5'></div>
-      <button type='button' class='btn btn-secondary tent-center col-2 mt-2 mb-2' hidden id="exportImage">Export as Image</button>
+      <button type='button' class='btn btn-secondary tent-center col-2 mt-2 mb-2' hidden id="exportImage">Exportar como Imagem</button>
       <div class='col-5'></div>
     </div>
     <script type="text/javascript" src="js/jquery-3.3.1.slim.min.js"></script>

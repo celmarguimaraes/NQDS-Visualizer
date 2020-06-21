@@ -4,11 +4,15 @@ const leitorDeCSV = new FileReader()
 let file, fileArr, rawData;
 let fileLine = [];
 
-function selecionaModal(versao,iteracao){
+function selecionaModal(versao,iteracao,data){
   $('#modalVersion').modal('hide');
   document.getElementById("buttonGroup").removeAttribute("hidden");
   versaoGraf = versao;
   iteracaoGraf = iteracao;
+  dataGraf = data;
+  if(primeiroGrafico == false){
+    selecionarGrafico(tipoGrafico);
+  }
 }
 
 function selecionarGrafico(tipo){
@@ -28,7 +32,8 @@ function consultaBanco(tipoconsulta){
   let dados = {
     consulta: tipoconsulta,
     iteracao: iteracaoGraf,
-    versao: versaoGraf
+    versao: versaoGraf,
+    data: dataGraf
   }
 
   return fetch('main/consultabanco.php', {
@@ -41,24 +46,7 @@ function consultaBanco(tipoconsulta){
   });
 }
 
-function insereBanco($dados){
-  let dados;
-  if($dados['tipo']=='visualization'){
-    dados = {
-      aqns: $dados['aqns'],
-      modelo: $dados['modelo'],
-      atributo: $dados['atributo'],
-      poco: $dados['poco'],
-      versao: $dados['versao'],
-      iteracao: $dados['iteracao']
-    }
-  }else if($dados['tipo']=='version'){
-    lados = {
-      versao: $dados['versao'] ,
-      data: $dados['data'] ,
-      iteracao: $dados['iteracao']
-    }
-  }
+function fetchBanco(dados){
 
   return fetch('main/inserebanco.php', {
     method: 'POST',
@@ -75,45 +63,63 @@ function subirCSV(arquivo){
   // Demais linhas: 'AQNS,Modelo,Atributo,Poco\n'
 
   //Primeira Linha
-  $dados = arquivo.split('\n');
-  $linha1 = $dados[0].split(',');
-  $dadosVersion = array(
-    tipo => 'version',
-    versao => $linha1[4],
-    data => $linha1[6],
-    iteracao => $linha1[5]
-  )
+  const linhasArquivo = arquivo.split('\n');
+  const linha1 = linhasArquivo[0].split(',');
 
-  //Demais Linhas
-  $dadosVisualization = array(
-    tipo => 'visualization',
-    versao => $linha1[4],
-    iteracao => $linha1[5]
-  )
+  console.log(linha1[2]);
+
+  let dados = { 
+    versao: linha1[0],
+    iteracao: linha1[1],
+    data:   linha1[2],
+    aqns: [],
+    modelo: [],
+    atributo: [],
+    poco: [],
+    primeiraLinha:[]
+  };
   
-  $dadosAqns = [];
-
-  for(let i=3;i < $dados.length-1; i++) {
-    fileLine = fileArr[i].split(';');
-    $dadosAqns += toFixed(fileLine[3].replace(/\r/g,""))+',';
-    $dadosAqns += fileLine[1]+',';
+  let linhaArquivo;
+  
+  //Demais linhas
+  for(let i=1;i < linhasArquivo.length-1; i++) {
+    linhaArquivo = linhasArquivo[i].split(',');
+    dados.aqns.push(toFixed(linhaArquivo[0].replace(/\r/g,"")));
+    dados.modelo.push(linhaArquivo[1]);
+    dados.atributo.push(linhaArquivo[2]);
+    dados.poco.push(linhaArquivo[3]);
+    if(i==1){
+      dados.primeiraLinha.push(true);
+    }else{
+      dados.primeiraLinha.push(false);
+    }
   }
 
-  array_push($dadosVisualization,$dadosAqns);
+  //Funcao que cria promise para fazer o insert no banco
+  promessaBanco(dados).then( mensagem => {
+    alert(mensagem.retorno+"\nQuantidade de dados inseridos: "+mensagem.contador);
+    location.reload();
+  }).catch( error => {
+    alert(error);
+  });
+}
+
+function promessaBanco(dados){
 
   return new Promise((resolve,reject) => {
 
-    insereBanco($dados).then( retorno => {
+    fetchBanco(dados).then( retorno => {
 
       return retorno.json();
 
   }).then(json => {
 
+      console.log(json);
       resolve(json);
 
-    }).catch(function() {
+    }).catch(error => {
 
-      reject(divFiltroPocos(erro));
+      reject('Erro na inserção no banco de dados.\n Mensagem: '+error.message);
 
     })
   })
@@ -163,12 +169,13 @@ function readFile(evt) {
 	rawData = evt.target.result;
   fileArr = evt.target.result.split('\n');
 
-  document.getElementById("buttonGroup").removeAttribute("hidden");
-  $('#modalVersion').modal('toggle');
-  $('#modalVersion').modal({backdrop:'static',keyboard:false});
-  //subirCSV(GeneratedCSV(fileArr));
+  //document.getElementById("buttonGroup").removeAttribute("hidden");
+  //$('#modalVersion').modal('toggle');
+  //$('#modalVersion').modal({backdrop:'static',keyboard:false});
+  subirCSV(GeneratedCSV(fileArr));
+  $('#modalAguarde').modal('show');
 
-  var hiddenElement = document.createElement('a');
+  /*var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(GeneratedCSV(fileArr));
     hiddenElement.target = '_blank';
     hiddenElement.download = 'produtos.csv';
@@ -224,7 +231,7 @@ const GeneratedCSV = fileArr => {
   //Primeira Linha: 'Versao,Iteracao,Data\n'
   //Demais Linhas: 'AQNS,Modelo,Atributo,Poco\n';
   let novoCSV = '';
-  novoCsv += version(fileArr)+','+iteration(fileArr)+','+date(fileArr)+'\n';
+  novoCSV += version(fileArr)+','+iteration(fileArr)+','+date(fileArr)+'\n';
   for(let i=3;i < fileArr.length-1; i++) {
     fileLine = fileArr[i].split(';');
     novoCSV += toFixed(fileLine[3].replace(/\r/g,""))+',';

@@ -72,7 +72,8 @@ function consultaGrafico(tipoconsulta,pocosSelec,atribsSelec,modelosSelec){
       atributos: atribsSelec,
       modelos: modelosSelec,
       iteracao: iteracaoGraf,
-      versao: versaoGraf
+      versao: versaoGraf,
+      data: dataGraf
     };
   
     return fetch('main/consultabanco.php', {

@@ -7,40 +7,40 @@ const textAQNS = (value) => {
   let text = "";
   switch (value) {
     case '1':
-        text += "Excelent"
+        text += "Excelente"
         break;
     case '2':
-        text += "Very Good"
+        text += "Muito Bom"
         break;
     case '3':
-        text += "Good"
+        text += "Bom"
         break;
     case '4':
         text += "Regular"
         break;
     case '5':
-        text += "Bad"
+        text += "Ruim"
         break;
     case '6':
-        text += "Unsatisfactory"
+        text += "Insatisfatório"
         break;
     case 1:
-        text += "Excelent"
+        text += "Excelente"
         break;
     case 2:
-        text += "Very Good"
+        text += "Muito Bom"
         break;
     case 3:
-        text += "Good"
+        text += "Bom"
         break;
     case 4:
         text += "Regular"
         break;
     case 5:
-        text += "Bad"
+        text += "Ruim"
         break;
     case 6:
-        text += "Unsatisfactory"
+        text += "Insatisfatório"
         break;
   }
   return text;
@@ -73,17 +73,17 @@ let mouseover = function(d) {
 let mousemove = function(d) {
   if(tipoGrafico=='MW'){
     tooltip
-    .html("Well: "+d.Poco+"<br>Model: "+d.Modelo+"<br>AQNS Value: "+textAQNS(d.ValorAQNS))
+    .html("Poço: "+d.Poco+"<br>Modelo: "+d.Modelo+"<br>Valor AQNS: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
   }else if(tipoGrafico=='MA'){
     tooltip
-    .html("Attribute: "+d.Atributo+"<br>Model: "+d.Modelo+"<br>AQNS Value: "+textAQNS(d.ValorAQNS))
+    .html("Atributo: "+d.Atributo+"<br>Modelo: "+d.Modelo+"<br>Valor AQNS: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
   }else{
     tooltip
-    .html("Well: "+d.Poco+"<br>Attribute: "+d.Atributo+"<br>AQNS Value: "+textAQNS(d.ValorAQNS))
+    .html("Poço: "+d.Poco+"<br>Atributo: "+d.Atributo+"<br>Valor AQNS: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
   }
@@ -217,7 +217,6 @@ function reOrdering(data,parsed,x,y,myColor,tipo){
         construirGraficoReordenado(ordemLinhas,parsed,order,dados,xx,y,tipo);
 
         //Rebuild the legend
-        //buildLegendMW(svg,myColor);
         let xRectBuffer = 500;
         let yRectBuffer = -40;
         let dataArray   = ['1','2','3','4','5','6'];
@@ -241,14 +240,30 @@ function reOrdering(data,parsed,x,y,myColor,tipo){
       }
 }
 
-function buildLegendMW(svg,myColor){
+function construirLegenda(svg,myColor,tipo){
   // Add title to graph
-  svg.append("text")
+  if(tipo=="MW"){
+    svg.append("text")
           .attr("x", 0)
           .attr("y", -50)
           .attr("text-anchor", "left")
           .style("font-size", "22px")
-          .text("Wells by Models NQDS Heatmap - Iteration "+iteracaoGraf);
+          .text("Gráfico de AQNS de Poços por Modelos - Iteração "+iteracaoGraf);
+  }else if(tipo == "MA"){
+    svg.append("text")
+          .attr("x", 0)
+          .attr("y", -50)
+          .attr("text-anchor", "left")
+          .style("font-size", "22px")
+          .text("Gráfico de AQNS de Atributos por Modelos - Iteração "+iteracaoGraf);
+  }else{
+    svg.append("text")
+    .attr("x", 0)
+    .attr("y", -50)
+    .attr("text-anchor", "left")
+    .style("font-size", "22px")
+    .text("Gráfico de AQNS de Atributos por Poços  - Iteração "+iteracaoGraf);
+  }
 
   // Add subtitle to graph
   svg.append("text")
@@ -258,7 +273,7 @@ function buildLegendMW(svg,myColor){
           .style("font-size", "14px")
           .style("fill", "grey")
           .style("max-width", 400)
-          .text("Date: "+"Data aida não capturada"+"| Version: "+versaoGraf);
+          .text("Data: "+dataGraf+"| Versão: "+versaoGraf);
 
 
   let xRectBuffer = 500;
@@ -360,7 +375,7 @@ function generateGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   
   construirGrafico(parsed,svg,x,y,tipo);
 
-  buildLegendMW(svg,myColor);
+  construirLegenda(svg,myColor,tipo);
 
   //Set visible the button to export image of the graphic
   document.getElementById("exportImage").removeAttribute("hidden");

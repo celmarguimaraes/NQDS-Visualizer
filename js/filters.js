@@ -48,7 +48,7 @@ function hideFilters(){
 }
 
 const titleFilters = () =>{
- let divString = "<p class='h3 text-center col-12 mb-0 pb-0'>FILTERS</p>";
+ let divString = "<p class='h3 text-center col-12 mb-0 pb-0'>FILTROS</p>";
  return divString;
 }
 
@@ -78,7 +78,7 @@ function divFiltroPocos(pocos){
 
   let divString = "";
 
-  divString += "<div class='row'><p class='font-weight-bolder text-center col-12 '>WELLS</p></div>";
+  divString += "<div class='row'><p class='font-weight-bolder text-center col-12 '>POÇOS</p></div>";
   divString += "<div class='row'>";
 
   Object.keys(pocos).map(function(key) {
@@ -120,7 +120,7 @@ function buscaAtributos(){
 function divFiltroAtributos(atributos){
   let divString = "";
 
-  divString += "<div class='row  text-center'><p class='font-weight-bolder col-12'>ATTRIBUTES</p></div>";
+  divString += "<div class='row  text-center'><p class='font-weight-bolder col-12'>ATRIBUTOS</p></div>";
   divString += "<div class='row'>";
   divString += "<div class='text-center col-12'>";
       
@@ -129,8 +129,11 @@ function divFiltroAtributos(atributos){
     divString += "<label class='form-check-label' for='"+atributos[key].Atributo+"'>"+atributos[key].Atributo+"</label> </div>";
   });
   
+
+  console.log(atributos);
+  
   divString += "<div style='position:relative; margin:auto; width:90%' >";
-  divString += "<div class='row'><p class='font-weight-bolder text-center col-12'>MODELS</p></div>";
+  divString += "<div class='row'><p class='font-weight-bolder text-center col-12'>MODELOS</p></div>";
   divString += "<div class='row'>";
   divString += "<span class='font-weight-bolder text-center mt-4 pt-1' style='position:absolute;min-width:30px;'></span>";
   divString += "<p class='col-2'>Max: <span id='myMaxValue' class='font-weight-bolder'></span></p>"
@@ -159,7 +162,7 @@ function divErroFiltro(erro){
 function constructButtonFilter(){
   let divString = "";
   divString += "<div class='col-5'></div>";
-  divString += "<button type='button' class='btn btn-secondary tent-center col-2 mt-1 mb-2' onclick='clicaBotao(tipoGrafico);'>Apply</button>";
+  divString += "<button type='button' class='btn btn-secondary tent-center col-2 mt-1 mb-2' onclick='clicaBotao(tipoGrafico);'>Aplicar</button>";
   divString += "<div class='col-5'></div></div>";
 
   document.getElementById('buttonFilter').innerHTML = divString;

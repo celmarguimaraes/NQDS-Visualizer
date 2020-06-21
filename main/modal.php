@@ -20,24 +20,22 @@
                     <thead>
                         <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Data</th>
                         <th scope="col">Versão</th>
                         <th scope="col">Iteração</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php foreach($retorno as $linha){ ?>
-                        <tr onclick="selecionaModal('<?php echo $linha['Versao'];?>','<?php echo $linha['Iteracao'];?>')">
+                        <tr onclick="selecionaModal('<?php echo trim($linha['Versao']);?>','<?php echo $linha['Iteracao'];?>','<?php echo date('d/m/Y H:i', strtotime($linha['Data']));?>')">
                         <th scope="row"><?php echo $contador++ ?></th>
+                        <td><?php echo date('d/m/Y H:i', strtotime($linha['Data']));?></td>
                         <td><?php echo $linha["Versao"];?></td>
                         <td><?php echo $linha["Iteracao"];?></td>
                         </tr>
                      <?php } ?>
                     </tbody>
                 </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>

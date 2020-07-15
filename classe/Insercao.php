@@ -3,9 +3,9 @@ include("Conexao.php");
 
 class ClassInsere extends ClassConexao{
     
-    public function insereVisualization($dados_repetidos,$versao,$iteracao,$id_identificacao){
+    public function insereIdentificacao($dados_repetidos,$id_identificacao){
 
-        $insercao = "INSERT INTO visualizacao (AQNS,Modelo,Atributo,Poco,Versao,Iteracao,id_identificacao) 
+        $insercao = "INSERT INTO dados_aqns (AQNS,Modelo,Atributo,Poco,id_identificacao) 
                             VALUES (:aqns,:modelo,:atributo,:poco,:versao,:iteracao,:id)";
         $crud=$this->conectaDB()->prepare($insercao);
         $contador = 0;
@@ -16,8 +16,6 @@ class ClassInsere extends ClassConexao{
             $crud->bindValue(':modelo',$modelo);
             $crud->bindValue(':atributo',$atributo);
             $crud->bindValue(':poco',$poco);
-            $crud->bindValue(':versao',$versao);
-            $crud->bindValue(':iteracao',$iteracao);
             $crud->bindValue(':id',$id_identificacao);
             if($crud->execute()){
                 $contador += $f=$crud->rowCount();
@@ -28,7 +26,7 @@ class ClassInsere extends ClassConexao{
         return $contador; 
     }
 
-    public function insereVersion($versao,$data,$iteracao){
+    public function insereDadosAqns($versao,$data,$iteracao){
         $insertSQL = "INSERT INTO identificacao (Versao,Data,Iteracao) 
                         VALUES (:versao,:data,:iteracao)";
         $crud=$this->conectaDB();
@@ -57,9 +55,6 @@ class ClassInsere extends ClassConexao{
         }else{
             return "Erro";
         }
-
-        $crud->execute();
-        return $f=$crud->rowCount();
     }
 }
 ?>

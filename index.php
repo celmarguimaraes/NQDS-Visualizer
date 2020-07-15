@@ -7,11 +7,12 @@
     <meta name="author" content="">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <title>Heatmap AQNS</title>
+    <title>Heatmap NQDS</title>
 
     <!-- Principal CSS do Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link href="css/nouislider.min.css" rel="stylesheet">
     <?php include 'main/modal.php'?>
     <?php include 'main/modalAguarde.php'?>
     
@@ -25,16 +26,16 @@
   <body>
   
     <header class="navbar border-bottom mt-2">
-      <h1 class="h2 pr-5 mr-5">AQNS Heatmap</h1>
+      <h1 class="h2 pr-5 mr-5">NQDS Heatmap</h1>
       <div class="btn-toolbar p-0 m-0">
         <div class="btn-group btn-group px-5 mr-5" id="buttonGroup" hidden>
-            <button type="button" id="MxW" class="btn btn-secondary" onclick="selecionarGrafico('MW')">Poços x Modelos</button>
-            <button type="button" id="MxA" class="btn btn-secondary" onclick="selecionarGrafico('MA')" >Atributos x Modelos</button>
-            <button type="button" id="WxA" class="btn btn-secondary" onclick="selecionarGrafico('WA')">Poços x Atributos</button>
+            <button type="button" id="MxW" class="btn btn-secondary" onclick="selecionarGrafico('MW')">Wells by Models</button>
+            <button type="button" id="MxA" class="btn btn-secondary" onclick="selecionarGrafico('MA')" >Attributes by Models</button>
+            <button type="button" id="WxA" class="btn btn-secondary" onclick="selecionarGrafico('WA')">Wells by Attributes</button>
         </div>
-        <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Subir novo arquivo</label>
+        <label for="inputCSV" class="btn btn-outline-secondary ml-5 mb-0">Upload New File</label>
         <input type="file" id="inputCSV" onchange="pegaCSV(this)">
-        <button type="button" class="btn btn-primary btn-ig ml-3 mb-0" data-toggle="modal" data-target="#modalVersion">Selecionar Versão</button>
+        <button type="button" class="btn btn-primary btn-ig ml-3 mb-0" data-toggle="modal" data-target="#modalVersion">Select Data</button>
       </div>
     </header>
     <div class="row border"><br>
@@ -48,17 +49,20 @@
     <div id="my_dataviz" height="0px"></div>
     <div class="row">
       <div class='col-5'></div>
-      <button type='button' class='btn btn-secondary tent-center col-2 mt-2 mb-2' hidden id="exportImage">Exportar como Imagem</button>
+      <button type='button' class='btn btn-secondary tent-center col-2 mt-2 mb-2' hidden id="exportImage">Export as SVG</button>
+      <div id="svgdataurl"></div>
       <div class='col-5'></div>
     </div>
+    <script src="https://cdn.rawgit.com/eligrey/canvas-toBlob.js/f1a01896135ab378aa5c0118eadd81da55e698d8/canvas-toBlob.js"></script>
+	  <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
     <script type="text/javascript" src="js/jquery-3.3.1.slim.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/nouislider.min.js"></script>
     <script type="text/javascript" src="js/d3.v4.js"></script>
     <script type="text/javascript" src="js/d3-scale-chromatic.v1.min.js"></script>
     <script type="text/javascript" src="js/loadData.js"></script>
     <script type="text/javascript" src="js/filters.js"></script>
     <script type="text/javascript" src="js/gerarGrafico.js"></script>
-    <script type="text/javascript" src="js/saveSvgAsPng.js"></script>
     <script type="text/javascript" src="js/saveImage.js"></script>
     <script type="text/javascript" src="js/consultaGrafico.js"></script>
   </body>

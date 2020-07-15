@@ -7,40 +7,40 @@ const textAQNS = (value) => {
   let text = "";
   switch (value) {
     case '1':
-        text += "Excelente"
+        text += "Excelent"
         break;
     case '2':
-        text += "Muito Bom"
+        text += "Very Good"
         break;
     case '3':
-        text += "Bom"
+        text += "Good"
         break;
     case '4':
         text += "Regular"
         break;
     case '5':
-        text += "Ruim"
+        text += "Bad"
         break;
     case '6':
-        text += "Insatisfatório"
+        text += "Insatisfactory"
         break;
     case 1:
-        text += "Excelente"
+        text += "Excelent"
         break;
     case 2:
-        text += "Muito Bom"
+        text += "Very Good"
         break;
     case 3:
-        text += "Bom"
+        text += "Good"
         break;
     case 4:
         text += "Regular"
         break;
     case 5:
-        text += "Ruim"
+        text += "Bad"
         break;
     case 6:
-        text += "Insatisfatório"
+        text += "Insatisfactory"
         break;
   }
   return text;
@@ -73,17 +73,17 @@ let mouseover = function(d) {
 let mousemove = function(d) {
   if(tipoGrafico=='MW'){
     tooltip
-    .html("Poço: "+d.Poco+"<br>Modelo: "+d.Modelo+"<br>Valor AQNS: "+textAQNS(d.ValorAQNS))
+    .html("Well: "+d.Poco+"<br>Model: "+d.Modelo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
   }else if(tipoGrafico=='MA'){
     tooltip
-    .html("Atributo: "+d.Atributo+"<br>Modelo: "+d.Modelo+"<br>Valor AQNS: "+textAQNS(d.ValorAQNS))
+    .html("Attribute: "+d.Atributo+"<br>Model: "+d.Modelo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
   }else{
     tooltip
-    .html("Poço: "+d.Poco+"<br>Atributo: "+d.Atributo+"<br>Valor AQNS: "+textAQNS(d.ValorAQNS))
+    .html("Well: "+d.Poco+"<br>Attribute: "+d.Atributo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
   }
@@ -248,21 +248,21 @@ function construirLegenda(svg,myColor,tipo){
           .attr("y", -50)
           .attr("text-anchor", "left")
           .style("font-size", "22px")
-          .text("Gráfico de AQNS de Poços por Modelos - Iteração "+iteracaoGraf);
+          .text("NQDS Graphic Wells by Models - Iteration "+iteracaoGraf);
   }else if(tipo == "MA"){
     svg.append("text")
           .attr("x", 0)
           .attr("y", -50)
           .attr("text-anchor", "left")
           .style("font-size", "22px")
-          .text("Gráfico de AQNS de Atributos por Modelos - Iteração "+iteracaoGraf);
+          .text("NQDS Graphic Attributes by Models - Iteration "+iteracaoGraf);
   }else{
     svg.append("text")
     .attr("x", 0)
     .attr("y", -50)
     .attr("text-anchor", "left")
     .style("font-size", "22px")
-    .text("Gráfico de AQNS de Atributos por Poços  - Iteração "+iteracaoGraf);
+    .text("NQDS Graphic Attributes by Wells  - Iteration "+iteracaoGraf);
   }
 
   // Add subtitle to graph
@@ -273,7 +273,7 @@ function construirLegenda(svg,myColor,tipo){
           .style("font-size", "14px")
           .style("fill", "grey")
           .style("max-width", 400)
-          .text("Data: "+dataGraf+"| Versão: "+versaoGraf);
+          .text("Date: "+dataGraf+"| Version: "+versaoGraf);
 
 
   let xRectBuffer = 500;
@@ -358,19 +358,34 @@ function generateGraphic(parsed,maxRangeModels,minRangeModels,tipo){
       d3.select(this).style('cursor', 'default');
 		});
 
-    if(maxRangeModels-minRangeModels<=100){
+    if(tipo=='WA'){
       svg.append("g")
-      .attr("class", "axis")
-      .attr("transform", "translate(-5," + height + ")")
-      .call(d3.axisBottom(x))
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.15em")
-      .attr("dy", ".15em")
-      .attr("transform", "rotate(-90)");
+        .attr("class", "axis")
+        .attr("transform", "translate(-5," + height + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.15em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-90)");
 
-      d3.selectAll(".axis")
-      .style("font","13px sans-serif");
+        d3.selectAll(".axis")
+        .style("font","13px sans-serif");
+    }else{
+      if(maxRangeModels-minRangeModels<=100){
+        svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(-5," + height + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.15em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-90)");
+
+        d3.selectAll(".axis")
+        .style("font","13px sans-serif");
+      }
     }
   
   construirGrafico(parsed,svg,x,y,tipo);

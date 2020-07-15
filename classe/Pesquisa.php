@@ -15,7 +15,7 @@ class ClassPesquisa extends ClassConexao{
 
     public function pesquisaPocos($idIdentificador){
         $consulta = "SELECT DISTINCT Poco
-                        FROM visualizacao
+                        FROM dados_aqns
                         WHERE id_identificacao = ".$idIdentificador."
                         ORDER BY Poco";
         $crud=$this->conectaDB()->prepare($consulta);
@@ -25,7 +25,7 @@ class ClassPesquisa extends ClassConexao{
 
     public function pesquisaAtributos($idIdentificador){
         $consulta = "SELECT DISTINCT Atributo, MAX(Modelo) AS Max_Modelo, MIN(Modelo) AS Min_Modelo
-                        FROM visualizacao
+                        FROM dados_aqns
                         WHERE id_identificacao = ".$idIdentificador."
                         GROUP BY Atributo";
         $crud=$this->conectaDB()->prepare($consulta);
@@ -43,7 +43,7 @@ class ClassPesquisa extends ClassConexao{
                             WHEN MAX(ABS(AQNS)) > 10.0 AND MAX(ABS(AQNS)) <= 20.0 THEN '5'
                             ELSE '6'
                         END AS ValorAQNS
-                        FROM visualizacao
+                        FROM dados_aqns
                         WHERE id_identificacao = ".$idIdentificador."
                         AND   Poco IN (".$pocos.")
                         AND   Atributo IN (".$atributos.")
@@ -65,7 +65,7 @@ class ClassPesquisa extends ClassConexao{
                             WHEN MAX(ABS(AQNS)) > 10.0 AND MAX(ABS(AQNS)) <= 20.0 THEN '5'
                             ELSE '6'
                         END AS ValorAQNS
-                        FROM visualizacao
+                        FROM dados_aqns
                         WHERE id_identificacao = ".$idIdentificador."
                         AND   Poco IN (".$pocos.")
                         AND   Atributo IN (".$atributos.")
@@ -87,7 +87,7 @@ class ClassPesquisa extends ClassConexao{
                             WHEN MAX(ABS(AQNS)) > 10.0 AND MAX(ABS(AQNS)) <= 20.0 THEN '5'
                             ELSE '6'
                         END AS ValorAQNS
-                        FROM visualizacao
+                        FROM dados_aqns
                         WHERE id_identificacao = ".$idIdentificador."
                         AND   Poco IN (".$pocos.")
                         AND   Atributo IN (".$atributos.")

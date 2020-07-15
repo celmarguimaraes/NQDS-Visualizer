@@ -10,8 +10,9 @@ function selecionaModal(versao,iteracao,data){
   versaoGraf = versao;
   iteracaoGraf = iteracao;
   dataGraf = data;
-  if(primeiroGrafico == false){
-    selecionarGrafico(tipoGrafico);
+  if(primeiroGrafico==false){
+    hideFilters();
+    habilitarFiltro(tipoGrafico);
   }
 }
 
@@ -135,8 +136,6 @@ function habilitarFiltro(tipo){
     buscaAtributos().then( atributos => {
       //Construir div de filtros de atributos e modelos
       divFiltroAtributos(atributos);
-      //Coloca o indice de número de modelos
-      setRange();
       //Constro o botão de filtragem
       constructButtonFilter();
       //Aplica o botão de filtragem

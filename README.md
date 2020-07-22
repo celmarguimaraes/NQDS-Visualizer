@@ -12,3 +12,5 @@ Software para visualização de Heatmap para casamento de histórico
 4º - Carregar os imports das tabelas MySQL no PhpMyAdmin em scripts/tables.sql dentro do banco de dados "heatmap_web"
 
 5º - Subir os arquivos dentro do diretório data através do botão "Upload new File"
+
+IMPORTANTE: Rodar a aplicação no Google Chrome !

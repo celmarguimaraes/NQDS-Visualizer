@@ -6,7 +6,7 @@ class ClassInsere extends ClassConexao{
     public function insereIdentificacao($dados_repetidos,$id_identificacao){
 
         $insercao = "INSERT INTO dados_aqns (AQNS,Modelo,Atributo,Poco,id_identificacao) 
-                            VALUES (:aqns,:modelo,:atributo,:poco,:versao,:iteracao,:id)";
+                            VALUES (:aqns,:modelo,:atributo,:poco,:id)";
         $crud=$this->conectaDB()->prepare($insercao);
         $contador = 0;
 

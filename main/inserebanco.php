@@ -14,7 +14,7 @@
     $contadorVisualizacao = 0;
 
     //Retorna false caso dê erro, ou retorna o Código da versão inserida
-    $erro = $pesquisa->insereIdentificacao($data['versao'],$dateTimeGrafico,$iteracao);
+    $erro = $pesquisa->insereDadosAqns($data['versao'],$dateTimeGrafico,$iteracao);
     
     $retorno = array();
 
@@ -24,7 +24,7 @@
             'retorno' => 'Versão já foi cadastrada !'
             );
     }else{
-        $contadorVisualizacao = $pesquisa->insereDadosAqns($dados_repetidos,$erro);
+        $contadorVisualizacao = $pesquisa->insereIdentificacao($dados_repetidos,$erro);
         $retorno = array(
             'contador' => $contadorVisualizacao,
             'retorno' => 'Inserção de dados realizada com sucesso !'

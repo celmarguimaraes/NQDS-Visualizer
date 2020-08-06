@@ -7,7 +7,7 @@
     $data = json_decode($json,true);
     $iteracao = intval($data['iteracao']);
     $dataGrafico = implode('-', array_reverse(explode('/', substr($data['data'],0,10))));
-    $dateTimeGrafico = $dataGrafico.' '.substr($data['data'],-6,5);
+    $dateTimeGrafico = $dataGrafico.' '.trim(substr($data['data'],-6));
     $pesquisa = new ClassInsere();
 
     $dados_repetidos = array_map(null,$data['aqns'],$data['modelo'],$data['atributo'],$data['poco'],$data['primeiraLinha']);

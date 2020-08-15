@@ -172,7 +172,7 @@ function divErroFiltro(erro){
   let divString = "";
 
   divString += "<p class='h3 text-center col-12 mb-0 pb-0'>ERROR IN DATABASE FILTER CONSULTATION</p>";
-  divString += "<p class='h5 text-center col-12 mb-0 pb-0'>Consulte um técnico</p></p>";
+  divString += "<p class='h5 text-center col-12 mb-0 pb-0'>Consult a specialist</p></p>";
   divString += "</div>";
   
   return divString;

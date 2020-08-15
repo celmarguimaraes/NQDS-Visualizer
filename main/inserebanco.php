@@ -21,13 +21,13 @@
     if ($erro == "Erro"){
         $retorno = array(
             'contador' => 0,
-            'retorno' => 'Versão já foi cadastrada !'
+            'retorno' => 'Version has already been inserted into the database  !'
             );
     }else{
         $contadorVisualizacao = $pesquisa->insereIdentificacao($dados_repetidos,$erro);
         $retorno = array(
             'contador' => $contadorVisualizacao,
-            'retorno' => 'Inserção de dados realizada com sucesso !'
+            'retorno' => 'Insertion in database succeed !'
         );
     }
 

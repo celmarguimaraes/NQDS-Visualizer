@@ -18,12 +18,12 @@ function selecionaModal(versao,iteracao,data){
 
 function selecionarGrafico(tipo){
   if(primeiroGrafico == true){
-    console.log("Primeiro gráfico !");
+    //console.log("Primeiro gráfico !");
     tipoGrafico = tipo;
     habilitarFiltro(tipo);
     primeiroGrafico = false;
   }else{
-    console.log("Outros gráficos !");
+    //console.log("Outros gráficos !");
     tipoGrafico = tipo;
     clicaBotao(tipo);
   }
@@ -98,7 +98,7 @@ function subirCSV(arquivo){
 
   //Funcao que cria promise para fazer o insert no banco
   promessaBanco(dados).then( mensagem => {
-    alert(mensagem.retorno+"\nQuantidade de dados inseridos: "+mensagem.contador);
+    alert(mensagem.retorno+"\nQuantity of lines inserted: "+mensagem.contador);
     location.reload();
   }).catch( error => {
     alert(error);
@@ -120,7 +120,7 @@ function promessaBanco(dados){
 
     }).catch(error => {
 
-      reject('Erro na inserção no banco de dados.\n Mensagem: '+error.message);
+      reject('Error: insertion in the database did not work.\n Message: '+error.message);
 
     })
   })

@@ -20,9 +20,9 @@
                     <thead>
                         <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Data</th>
-                        <th scope="col">Versão</th>
-                        <th scope="col">Iteração</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Version</th>
+                        <th scope="col">Iteration</th>
                         </tr>
                     </thead>
                     <tbody>

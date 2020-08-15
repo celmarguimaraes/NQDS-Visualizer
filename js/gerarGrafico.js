@@ -488,8 +488,8 @@ function reordenar(parsed,linha,tipo){
     }
   });
 
-  const maxRangeModels = document.getElementById('maxRangeModels').value;
-  const minRangeModels = document.getElementById('minRangeModels').value;
+  const minRangeModels = parseInt(slider.noUiSlider.get()[0]);
+  const maxRangeModels = parseInt(slider.noUiSlider.get()[1]);
 
   //Calculate times clicked to alter the sort order
   // 1 time - Ascendent

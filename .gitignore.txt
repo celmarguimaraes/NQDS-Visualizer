@@ -1,0 +1,9 @@
+.vscode/desktop.ini
+classe/desktop.ini
+css/desktop.ini
+data/desktop.ini
+desktop.ini
+js/desktop.ini
+log/desktop.ini
+main/desktop.ini
+scripts/desktop.ini

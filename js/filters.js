@@ -6,11 +6,11 @@ function clicaBotao(tipoGraf){
   let atribsSelec = [];
   const pocos = document.getElementsByName('filtroPocos');
   const atributos = document.getElementsByName('filtroAtributos');
-  const sliderFormat = document.getElementById('slider-format');
+  const slider = document.getElementById('slider');
   
   
-  const minRangeModels = parseInt(sliderFormat.noUiSlider.get()[0]);
-  const maxRangeModels = parseInt(sliderFormat.noUiSlider.get()[1]);
+  const minRangeModels = parseInt(slider.noUiSlider.get()[0]);
+  const maxRangeModels = parseInt(slider.noUiSlider.get()[1]);
   
   console.log('minRangeModels',minRangeModels);
   console.log('maxRangeModels',maxRangeModels);
@@ -142,15 +142,15 @@ function divFiltroAtributos(atributos){
   divString += "<div style='position:relative; margin:auto; width:90%' >";
   divString += "<div class='row'><p class='font-weight-bolder text-center col-12'>MODELS</p></div>";
   divString += "</div>"
-  divString += "<div id='slider-format'></div>"
+  divString += "<div id='slider'></div>"
 
   document.getElementById('filters-2').innerHTML = divString;
 
   //CRIANDO E COLOCANDO VALORES DINAMICAMENTE NO SLIDER DE 2 PONTAS
 
-  const sliderFormat = document.getElementById('slider-format');
+  const slider = document.getElementById('slider');
 
-  noUiSlider.create(sliderFormat, {
+  noUiSlider.create(slider, {
     start: [parseInt(atributos[0].Min_Modelo.substring(4,8)),
        parseInt(atributos[0].Max_Modelo.substring(4,8))],
     connect: true,
@@ -162,14 +162,12 @@ function divFiltroAtributos(atributos){
     },
     format: wNumb({
         decimals: 0,
-        thousand: '.',
-        suffix: ''
     }),
     tooltips: true
   });
 
-  sliderFormat.style.width='90%';
-  sliderFormat.style.marginTop='25px'
+  slider.style.width='90%';
+  slider.style.marginTop='25px'
 
 }
 

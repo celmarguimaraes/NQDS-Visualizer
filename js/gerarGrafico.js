@@ -75,17 +75,17 @@ let mousemove = function(d) {
     tooltip
     .html("Well: "+d.Poco+"<br>Model: "+d.Modelo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
-    .style("top", (d3.mouse(this)[1]+300) + "px")
+    .style("top", (d3.mouse(this)[1]+430) + "px")
   }else if(tipoGrafico=='MA'){
     tooltip
     .html("Attribute: "+d.Atributo+"<br>Model: "+d.Modelo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
-    .style("top", (d3.mouse(this)[1]+300) + "px")
+    .style("top", (d3.mouse(this)[1]+430) + "px")
   }else{
     tooltip
     .html("Well: "+d.Poco+"<br>Attribute: "+d.Atributo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
-    .style("top", (d3.mouse(this)[1]+300) + "px")
+    .style("top", (d3.mouse(this)[1]+430) + "px")
   }  
 }
 let mouseleave = function(d) {
@@ -94,148 +94,6 @@ let mouseleave = function(d) {
   d3.select(this)
     .style("stroke", "none")
     .style("opacity", 0.8)
-}
-
-//Reorder the heatmap by the click in the row of the graphic
-function reOrdering(data,parsed,x,y,myColor,tipo){
-
-    const dados = data;
-    let order = [];
-    const linhaClicada = reordenar(parsed,dados,tipo);
-
-    if(linhaClicada != false){
-      // set the dimensions and margins of the graph
-      let margin = {top: 90, right: 0, bottom: 100, left: 60},
-      width = 1200 - margin.left - margin.right,
-      height = 620 - margin.top - margin.bottom;
-
-      let xx = construirEixoX(linhaClicada,width,tipo);
-
-      /*d3.selectAll(".axis")
-        .remove();
-
-      const maxRangeModels = document.getElementById('maxRangeModels').value;
-      const minRangeModels = document.getElementById('minRangeModels').value;
-
-      if(maxRangeModels-minRangeModels<=100){
-        svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(-5," + height + ")")
-        .call(d3.axisBottom(xx))
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.15em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-90)");
-
-        d3.selectAll(".axis")
-        .style("font","13px sans-serif");
-      }*/
-
-      linhaClicada.forEach(function(element,index){
-        order.push(element.Modelo);
-      })
-
-      //Remove todos os retângulos
-      svg.selectAll("rect")
-        .remove();
-
-      //Construir apenas a linha que foi clicada
-      svg.selectAll("rect")
-        .data(linhaClicada, function(d) {
-          if (tipo=='MW'){
-            return d.Modelo+':'+d.Poco;
-          }else if(tipo== 'MA'){
-            return d.Modelo+':'+d.Atributo;
-          }else{
-            return d.Poco+':'+d.Atributo;
-          }
-          })
-        .enter()
-        .append("rect")
-        .attr("x", function(d,i) {
-          let xis;
-          if (tipo=='MW'){
-            xis = 2+(xx(d.Modelo) - (xx(d.Modelo) - x.bandwidth()*i+1));
-          }else if(tipo== 'MA'){
-            xis = 2+(xx(d.Modelo) - (xx(d.Modelo) - x.bandwidth()*i+1));
-          }else{
-            xis = 2+(xx(d.Poco) - (xx(d.Poco) - x.bandwidth()*i+1));
-          }
-          return xis;
-        })
-        .attr("y", function(d) {
-          if (tipo=='MW'){
-            return y(d.Poco)
-          }else if(tipo== 'MA'){
-            return y(d.Atributo)
-          }else{
-            return y(d.Atributo)
-          }
-          })
-        .attr("width", x.bandwidth() )
-        .attr("height", y.bandwidth() )
-        //.attr("transform", "translate(0.5,0)")
-        .style("fill", function(d) { return myColor(d.ValorAQNS)} )
-        .style("stroke-width", 4)
-          .style("stroke", "none")
-          .style("opacity", 0.8)
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
-
-        let ordemLinhas = [];
-        
-        if (tipo == 'MW'){
-          const pocos = document.getElementsByName('filtroPocos');
-          //Percorrendo filtro de Pocos
-          for(let i=0;i<pocos.length;i++){
-            if( document.getElementById(pocos[i].id).checked ){
-              ordemLinhas.push(pocos[i].id);
-            }
-          }
-        }else if(tipo == 'MA'){
-          const atributos = document.getElementsByName('filtroAtributos');
-          //Percorrendo filtro de Atributos
-          for(let i=0;i<atributos.length;i++){
-            if( document.getElementById(atributos[i].id).checked ){
-              ordemLinhas.push(atributos[i].id);
-            }
-          }
-        }else{
-          const atributos = document.getElementsByName('filtroAtributos');
-          //Percorrendo filtro de Atributos
-          for(let i=0;i<atributos.length;i++){
-            if( document.getElementById(atributos[i].id).checked ){
-              ordemLinhas.push(atributos[i].id);
-            }
-          }
-        }
-        
-        construirGraficoReordenado(ordemLinhas,parsed,order,dados,xx,y,tipo);
-
-        //Rebuild the legend
-        let xRectBuffer = 500;
-        let yRectBuffer = -40;
-        let dataArray   = ['1','2','3','4','5','6'];
-      
-        //Rectangles legend
-        svg.append("g").selectAll("rect")
-                .data(dataArray)
-                .enter()
-                .append("rect")
-                .attr("x",function(d){
-                    var spacing = 100;
-                    return xRectBuffer+(d-1)*spacing
-                })
-                .attr("y",yRectBuffer)
-                .attr("width", 30)
-                .attr("height", 25)
-                .style("fill", function(d) { return myColor(d)} )
-                .style("stroke-width", 4)
-                .style("stroke", "none")
-                .style("opacity", 0.8);
-      }
 }
 
 function construirLegenda(svg,myColor,tipo){
@@ -342,18 +200,6 @@ function generateGraphic(parsed,maxRangeModels,minRangeModels,tipo){
 
   //Y functions for the row legends
   d3.selectAll('.tick')
-    .on("click", function (d) {
-      timesClicked++;
-      reOrdering(d,parsed,x,y,myColor,tipo);
-    })
-    .on("mouseover", function (d){
-      d3.select(this).attr('font-weight', 'bold').style('fill', 'red');
-      d3.select(this).style('cursor', 'pointer');
-    })
-    .on("mouseout", function(d) {
-			d3.select(this).attr('font-weight', 'normal').style('fill', 'black');
-      d3.select(this).style('cursor', 'default');
-		});
 
     if(tipo=='WA'){
       svg.append("g")
@@ -471,135 +317,4 @@ function construirGrafico(parsed,svg,x,y,tipo){
     .on("mouseover", mouseover)
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
-}
-
-function reordenar(parsed,linha,tipo){
-
-  let justTheWell = parsed.filter(function(d,i){ 
-    if(tipo=='MW'){
-      return d.Poco == linha
-    }else if(tipo=='MA'){
-      return d.Atributo == linha
-    }else{
-      return d.Atributo == linha
-    }
-  });
-
-  const minRangeModels = parseInt(slider.noUiSlider.get()[0]);
-  const maxRangeModels = parseInt(slider.noUiSlider.get()[1]);
-
-  //Calculate times clicked to alter the sort order
-  // 1 time - Ascendent
-  // 2 times - Descendent
-  // 3 times - Normal Visualization
-  if(timesClicked == 1){
-    justTheWell.sort(function(a,b){
-      if(tipo=='MW'){
-        return  d3.ascending(a.ValorAQNS,b.ValorAQNS) || d3.descending(a.Modelo,b.Modelo);
-      }else if(tipo=='MA'){
-        return  d3.ascending(a.ValorAQNS,b.ValorAQNS) || d3.descending(a.Modelo,b.Modelo);
-      }else{
-        return  d3.ascending(a.ValorAQNS,b.ValorAQNS) || d3.descending(a.Poco,b.Poco);
-      }
-    });
-  }else if(timesClicked == 2){
-    justTheWell.sort(function(a,b){
-      if(tipo=='MW'){
-        return  d3.descending(a.ValorAQNS,b.ValorAQNS) || d3.descending(a.Modelo,b.Modelo);
-      }else if(tipo=='MA'){
-        return  d3.descending(a.ValorAQNS,b.ValorAQNS) || d3.descending(a.Modelo,b.Modelo);
-      }else{
-        return  d3.descending(a.ValorAQNS,b.ValorAQNS) || d3.descending(a.Poco,b.Poco);
-      }
-    });
-  }else if(timesClicked == 3){
-      timesClicked = 0;
-      clearGraphicArea();
-      generateGraphic(parsed,maxRangeModels,minRangeModels,tipo);
-      return false;
-  }
-
-  return justTheWell;
-}
-
-function construirGraficoReordenado(ordemLinhas,parsed,order,dados,x,y,tipo){
-  ordemLinhas.splice(ordemLinhas.indexOf(dados),1);
-
-        // For each row's well that isn`t clicked
-        ordemLinhas.forEach(function(element,index){
-          let filtered = parsed.filter(function(d){
-            if (tipo == 'MW'){
-              return d.Poco == element 
-            }else if(tipo == 'MA'){
-              return d.Atributo == element 
-            }else{
-              return d.Atributo == element 
-            }
-          });
-
-          let result = [];
-
-          //Order the columns according to the order of the line clicked
-          order.forEach(function(key) {
-              var found = false;
-              filtered = filtered.filter(function(item) {
-                if (tipo == 'MW'){
-                  if(!found && item.Modelo == key) {
-                      result.push(item);
-                      found = true;
-                      return false;
-                  } else{
-                      return true;
-                  }
-                } else if(tipo == 'MA'){
-                  if(!found && item.Modelo == key) {
-                    result.push(item);
-                    found = true;
-                    return false;
-                  } else{
-                    return true;
-                  }
-                } else {
-                  if(!found && item.Poco == key) {
-                    result.push(item);
-                    found = true;
-                    return false;
-                  } else{
-                    return true;
-                  }
-                }
-              })
-          })
-
-          //Build all the other well lines following the order constructed above
-          let count=0;
-          svg.selectAll("rect")
-            .data(result, function(d) {
-              if (tipo=='MW'){
-                return d.Modelo+':'+d.Poco;
-              }else if(tipo== 'MA'){
-                return d.Modelo+':'+d.Atributo;
-              }else{
-                return d.Poco+':'+d.Atributo;
-              }
-            })
-            .enter()
-            .append("rect")
-            .attr("x", function(d) {
-              let xis = 2+(x(order[count]) - (x(order[count]) - x.bandwidth()*count+1));
-              count++;
-              return xis;
-            })
-            .style("padding",0.01)
-            .attr("y", y(element) )
-            .attr("width", x.bandwidth() )
-            .attr("height", y.bandwidth() )
-            .style("fill", function(d) { return myColor(d.ValorAQNS)} )
-            .style("stroke-width", 4)
-              .style("stroke", "none")
-              .style("opacity", 0.8)
-            .on("mouseover", mouseover)
-            .on("mousemove", mousemove)
-            .on("mouseleave", mouseleave);
-        })
 }

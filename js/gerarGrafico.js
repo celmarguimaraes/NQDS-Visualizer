@@ -198,9 +198,6 @@ function generateGraphic(parsed,maxRangeModels,minRangeModels,tipo){
     .attr('class', 'rowLabels')
     .call(d3.axisLeft(y));
 
-  //Y functions for the row legends
-  d3.selectAll('.tick')
-
     if(tipo=='WA'){
       svg.append("g")
         .attr("class", "axis")

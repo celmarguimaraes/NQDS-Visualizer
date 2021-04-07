@@ -86,9 +86,7 @@ let mousemove = function(d) {
     .html("Well: "+d.Poco+"<br>Attribute: "+d.Atributo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
     .style("left", (d3.mouse(this)[0]) + "px")
     .style("top", (d3.mouse(this)[1]+300) + "px")
-  }
-  
-    
+  }  
 }
 let mouseleave = function(d) {
   tooltip
@@ -275,12 +273,11 @@ function construirLegenda(svg,myColor,tipo){
           .style("max-width", 400)
           .text("Date: "+dataGraf+"| Version: "+versaoGraf);
 
-
   let xRectBuffer = 500;
   let yRectBuffer = -40;
   let dataArray   = ['1','2','3','4','5','6'];
 
-  //Rectangles legend
+  //Rectangles subtitle
   svg.append("g").selectAll("rect")
           .data(dataArray)
           .enter()

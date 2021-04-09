@@ -31,10 +31,10 @@ function clicaBotao(tipoGraf){
   
   gerarStringGrafico(tipo,pocosSelec,atribsSelec,maxRangeModels,minRangeModels).then( data => {
     if(primeiroGrafico == true){
-      generateGraphic(data,maxRangeModels,minRangeModels,tipo);
+      generateMatrixGraphic(data,maxRangeModels,minRangeModels,tipo);
     }else{
       clearGraphicArea();
-      generateGraphic(data,maxRangeModels,minRangeModels,tipo);
+      generateMatrixGraphic(data,maxRangeModels,minRangeModels,tipo);
     }
     //console.log(data);
     //console.log(tipoGrafico);

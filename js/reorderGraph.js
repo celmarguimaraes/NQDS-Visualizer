@@ -68,7 +68,7 @@ let tooltip = d3.select("#my_dataviz")
 .style("padding", "5px");
 
 // Three function that change the tooltip when user hover / move / leave a cell
-let mouseover = function(d) {
+let mouseover = function() {
   tooltip
     .style("opacity", 1)
   d3.select(this)
@@ -93,7 +93,7 @@ let mousemove = function(d) {
     .style("top", (d3.mouse(this)[1]+430) + "px")
   }  
 }
-let mouseleave = function(d) {
+let mouseleave = function() {
   tooltip
     .style("opacity", 0)
   d3.select(this)
@@ -207,64 +207,78 @@ function initial_order_permute() {
 function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo,
   minRangeModels, maxRangeModels){
   var matrix = [],
-      column,
-      line, 
-      column_count = (maxRangeModels-minRangeModels+1),
-      line_count = colsfilling.filter(onlyUnique).length,
-
       column_labels = linesfilling.filter(onlyUnique),
       row_labels = colsfilling.filter(onlyUnique);
+      
+      column_count = column_labels.length,
+      column_count_WA = column_labels.length;
+      line_count = colsfilling.filter(onlyUnique).length,
 
-  var blankMatrix = [],
       parsedAdress = 0;
 
-  for (var dummyLine = 0; dummyLine < line_count; dummyLine++){ // creating Matrix Model
-    blankMatrix[dummyLine] = [];
-    for (var dummyColumn = 0; dummyColumn < column_count; dummyColumn++){ 
-      if (tipo=='MW'){
-        blankMatrix[dummyLine][dummyColumn] = 
-        {Modelo: column_labels[dummyColumn], Poco: row_labels[dummyLine], ValorAQNS:''}
+  if (tipo == 'MW' || tipo == 'MA'){
+    var blankMatrix = [];
+    for (var dummyLine = 0; dummyLine < line_count; dummyLine++) { // creating Matrix Model
+      blankMatrix[dummyLine] = [];
+      for (var dummyColumn = 0; dummyColumn < column_count; dummyColumn++) {
+        if (tipo == 'MW') {
+          blankMatrix[dummyLine][dummyColumn] =
+            { Modelo: column_labels[dummyColumn], Poco: row_labels[dummyLine], ValorAQNS: '' }
+        }
+        else {
+          blankMatrix[dummyLine][dummyColumn] =
+            { Modelo: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS: '' }
+        }
       }
-      else if (tipo=='MA'){
-        blankMatrix[dummyLine][dummyColumn] = 
-        {Modelo: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS:''}
-      }
-      else{
-        blankMatrix[dummyLine][dummyColumn] = 
-        {Poco: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS:''}
+    }
+  }
+  else {
+    var blankMatrix = [];
+    for (var dummyLine = 0; dummyLine < line_count; dummyLine++) { // creating Matrix Model
+      blankMatrix[dummyLine] = [];
+      for (var dummyColumn = 0; dummyColumn < column_count_WA; dummyColumn++) {
+        blankMatrix[dummyLine][dummyColumn] =
+          { Poco: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS: '' }      
       }
     }
   }
 
-  for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++){ // filling AQNS values
-    for (dummyLine = 0; dummyLine < line_count; dummyLine++){
-      if (tipo=='MW'){
-        if (typeof parsed[parsedAdress] == 'undefined'){
-          break;
-        }
-        if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo 
-          && blankMatrix[dummyLine][dummyColumn].Poco == parsed[parsedAdress].Poco){
-            blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
-            parsedAdress++;
-        }
-        else{
-          blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
-        }
-      }
-      else if (tipo=='MA'){
-        if (typeof parsed[parsedAdress] == 'undefined'){
-          break;
-        }
-        if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo 
-          && blankMatrix[dummyLine][dummyColumn].Atributo == parsed[parsedAdress].Atributo){
-            blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
-            parsedAdress++;
+  if (tipo== 'MW' || tipo =='MA'){
+    for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++){ // filling AQNS values
+      for (dummyLine = 0; dummyLine < line_count; dummyLine++){
+        if (tipo=='MW'){
+          if (typeof parsed[parsedAdress] == 'undefined'){
+            break;
+          }
+          if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo 
+            && blankMatrix[dummyLine][dummyColumn].Poco == parsed[parsedAdress].Poco){
+              blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
+              parsedAdress++;
+          }
+          else{
+            blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
+          }
         }
         else{
-          blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
+          if (typeof parsed[parsedAdress] == 'undefined'){
+            break;
+          }
+          if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo 
+            && blankMatrix[dummyLine][dummyColumn].Atributo == parsed[parsedAdress].Atributo){
+              blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
+              parsedAdress++;
+          }
+          else{
+            blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
+          }
         }
       }
-      else{
+    }
+  }
+
+  else {
+    for (dummyColumn = 0; dummyColumn < column_count_WA; dummyColumn++){ // filling AQNS values
+      for (dummyLine = 0; dummyLine < line_count; dummyLine++){
         if (typeof parsed[parsedAdress] == 'undefined'){
           break;
         }
@@ -279,17 +293,26 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo,
       }
     }
   }
-
   //console.log('modelMatrix', blankMatrix)
 
-  for (dummyLine = 0; dummyLine < line_count; dummyLine++){
-    matrix[dummyLine] = [];
-    for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++){
-      matrix[dummyLine][dummyColumn] = blankMatrix[dummyLine][dummyColumn].ValorAQNS;
+  if (tipo== 'MW' || tipo == 'MA'){
+    for (dummyLine = 0; dummyLine < line_count; dummyLine++) {
+      matrix[dummyLine] = [];
+      for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++) {
+        matrix[dummyLine][dummyColumn] = blankMatrix[dummyLine][dummyColumn].ValorAQNS;
+      }
     }
   }
 
-  //console.log('finalMatrix', matrix)
+  else{
+    for (dummyLine = 0; dummyLine < line_count; dummyLine++) {
+      matrix[dummyLine] = [];
+      for (dummyColumn = 0; dummyColumn < column_count_WA; dummyColumn++) {
+        matrix[dummyLine][dummyColumn] = blankMatrix[dummyLine][dummyColumn].ValorAQNS;
+      }
+    }
+  }
+  console.log('finalMatrix', matrix)
 
   return matrix;
 }
@@ -330,15 +353,15 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   }
 
   unique_col_labels = row_values.filter(onlyUnique);
-  unique_row_labels = column_values.filter(onlyUnique)
-
+  unique_row_labels = column_values.filter(onlyUnique);
+ 
   var matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo,
     minRangeModels, maxRangeModels);
   //console.log('matrix', matrix)
 
   table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels}, width, height);
 
-  //optimal_leaf_order_permute(matrix)
+  optimal_leaf_order_permute(matrix)
 }
 
 function generateGraphic(parsed,maxRangeModels,minRangeModels,tipo){
@@ -457,7 +480,7 @@ function construirGrafico(parsed,svg,x,y,tipo){
       }})
     .enter()
     .append("rect")
-    .attr("x", function(d,i) { 
+    .attr("x", function(d) { 
       if(tipo=='MW'){
         return x(d.Modelo);
       }else if(tipo=='MA'){

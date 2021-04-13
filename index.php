@@ -53,19 +53,19 @@
       <div id="svgdataurl"></div>
       <div class='col-5'></div>
     </div>
-    <script type="text/javascript" src="js/reorder.min.js"></script>
+    <script type="text/javascript" src="js/lib/reorder.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-3.3.1.slim.min.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/lib/nouislider.min.js"></script>
+    <script type="text/javascript" src="js/lib/d3.v4.js"></script>
+    <script type="text/javascript" src="js/lib/d3-scale-chromatic.v1.min.js"></script>
+    <script type="text/javascript" src="js/lib/saveImage.js"></script>
+    <script type="text/javascript" src="js/lib/wNumb.js"></script>
     <script type="text/javascript" src="js/table.js"></script>
-    <script type="text/javascript" src="js/jquery-3.3.1.slim.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/nouislider.min.js"></script>
-    <script type="text/javascript" src="js/d3.v4.js"></script>
-    <script type="text/javascript" src="js/d3-scale-chromatic.v1.min.js"></script>
     <script type="text/javascript" src="js/loadData.js"></script>
     <script type="text/javascript" src="js/filters.js"></script>
     <script type="text/javascript" src="js/reorderGraph.js"></script>
     <!--<script type="text/javascript" src="js/gerarGrafico.js"></script>-->
-    <script type="text/javascript" src="js/saveImage.js"></script>
     <script type="text/javascript" src="js/consultaGrafico.js"></script>
-    <script type="text/javascript" src="js/wNumb.js"></script>
   </body>
 </html>

@@ -337,6 +337,9 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels}, width, height);
 
   optimal_leaf_order_permute(matrix)
+
+  //Set visible the button to export image of the graphic
+  document.getElementById("exportImage").removeAttribute("hidden");
 }
 
 function generateGraphic(parsed,maxRangeModels,minRangeModels,tipo){

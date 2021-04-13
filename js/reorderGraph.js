@@ -211,83 +211,69 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo,
       row_labels = colsfilling.filter(onlyUnique);
       
       column_count = column_labels.length,
-      column_count_WA = column_labels.length;
       line_count = colsfilling.filter(onlyUnique).length,
 
-      parsedAdress = 0;
+      parsedAdress = 0,
+      blankMatrix = [];
 
-  if (tipo == 'MW' || tipo == 'MA'){
-    var blankMatrix = [];
-    for (var dummyLine = 0; dummyLine < line_count; dummyLine++) { // creating Matrix Model
-      blankMatrix[dummyLine] = [];
-      for (var dummyColumn = 0; dummyColumn < column_count; dummyColumn++) {
-        if (tipo == 'MW') {
-          blankMatrix[dummyLine][dummyColumn] =
-            { Modelo: column_labels[dummyColumn], Poco: row_labels[dummyLine], ValorAQNS: '' }
-        }
-        else {
-          blankMatrix[dummyLine][dummyColumn] =
-            { Modelo: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS: '' }
-        }
-      }
-    }
-  }
-  else {
-    var blankMatrix = [];
-    for (var dummyLine = 0; dummyLine < line_count; dummyLine++) { // creating Matrix Model
-      blankMatrix[dummyLine] = [];
-      for (var dummyColumn = 0; dummyColumn < column_count_WA; dummyColumn++) {
+  for (var dummyLine = 0; dummyLine < line_count; dummyLine++) { // creating Matrix Model
+    blankMatrix[dummyLine] = [];
+    for (var dummyColumn = 0; dummyColumn < column_count; dummyColumn++) {
+      if (tipo == 'MW') {
         blankMatrix[dummyLine][dummyColumn] =
-          { Poco: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS: '' }      
+          { Modelo: column_labels[dummyColumn], Poco: row_labels[dummyLine], ValorAQNS: '' }
       }
-    }
-  }
-
-  if (tipo== 'MW' || tipo =='MA'){
-    for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++){ // filling AQNS values
-      for (dummyLine = 0; dummyLine < line_count; dummyLine++){
-        if (tipo=='MW'){
-          if (typeof parsed[parsedAdress] == 'undefined'){
-            break;
-          }
-          if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo 
-            && blankMatrix[dummyLine][dummyColumn].Poco == parsed[parsedAdress].Poco){
-              blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
-              parsedAdress++;
-          }
-          else{
-            blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
-          }
-        }
-        else{
-          if (typeof parsed[parsedAdress] == 'undefined'){
-            break;
-          }
-          if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo 
-            && blankMatrix[dummyLine][dummyColumn].Atributo == parsed[parsedAdress].Atributo){
-              blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
-              parsedAdress++;
-          }
-          else{
-            blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
-          }
+      else if (tipo == 'MA') {
+        blankMatrix[dummyLine][dummyColumn] =
+          { Modelo: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS: '' }
+      }
+      else {
+        for (var dummyColumn = 0; dummyColumn < column_count; dummyColumn++) {
+          blankMatrix[dummyLine][dummyColumn] =
+            { Poco: column_labels[dummyColumn], Atributo: row_labels[dummyLine], ValorAQNS: '' }
         }
       }
     }
   }
 
-  else {
-    for (dummyColumn = 0; dummyColumn < column_count_WA; dummyColumn++){ // filling AQNS values
-      for (dummyLine = 0; dummyLine < line_count; dummyLine++){
-        if (typeof parsed[parsedAdress] == 'undefined'){
+  for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++) { // filling AQNS values
+    for (dummyLine = 0; dummyLine < line_count; dummyLine++) {
+      if (tipo == 'MW') {
+        if (typeof parsed[parsedAdress] == 'undefined') {
           break;
         }
-        if (blankMatrix[dummyLine][dummyColumn].Poco == parsed[parsedAdress].Poco 
-          && blankMatrix[dummyLine][dummyColumn].Atributo == parsed[parsedAdress].Atributo){
-            blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
-            parsedAdress++;
+        if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo
+          && blankMatrix[dummyLine][dummyColumn].Poco == parsed[parsedAdress].Poco) {
+          blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
+          parsedAdress++;
         }
-        else{
+        else {
+          blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
+        }
+      }
+      else if (tipo == 'MA') {
+        if (typeof parsed[parsedAdress] == 'undefined') {
+          break;
+        }
+        if (blankMatrix[dummyLine][dummyColumn].Modelo == parsed[parsedAdress].Modelo
+          && blankMatrix[dummyLine][dummyColumn].Atributo == parsed[parsedAdress].Atributo) {
+          blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
+          parsedAdress++;
+        }
+        else {
+          blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
+        }
+      }
+      else {
+        if (typeof parsed[parsedAdress] == 'undefined') {
+          break;
+        }
+        if (blankMatrix[dummyLine][dummyColumn].Poco == parsed[parsedAdress].Poco
+          && blankMatrix[dummyLine][dummyColumn].Atributo == parsed[parsedAdress].Atributo) {
+          blankMatrix[dummyLine][dummyColumn].ValorAQNS = parsed[parsedAdress].ValorAQNS;
+          parsedAdress++;
+        }
+        else {
           blankMatrix[dummyLine][dummyColumn].ValorAQNS = "0";
         }
       }
@@ -295,21 +281,10 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo,
   }
   //console.log('modelMatrix', blankMatrix)
 
-  if (tipo== 'MW' || tipo == 'MA'){
-    for (dummyLine = 0; dummyLine < line_count; dummyLine++) {
-      matrix[dummyLine] = [];
-      for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++) {
-        matrix[dummyLine][dummyColumn] = blankMatrix[dummyLine][dummyColumn].ValorAQNS;
-      }
-    }
-  }
-
-  else{
-    for (dummyLine = 0; dummyLine < line_count; dummyLine++) {
-      matrix[dummyLine] = [];
-      for (dummyColumn = 0; dummyColumn < column_count_WA; dummyColumn++) {
-        matrix[dummyLine][dummyColumn] = blankMatrix[dummyLine][dummyColumn].ValorAQNS;
-      }
+  for (dummyLine = 0; dummyLine < line_count; dummyLine++) {
+    matrix[dummyLine] = [];
+    for (dummyColumn = 0; dummyColumn < column_count; dummyColumn++) {
+      matrix[dummyLine][dummyColumn] = blankMatrix[dummyLine][dummyColumn].ValorAQNS;
     }
   }
   console.log('finalMatrix', matrix)

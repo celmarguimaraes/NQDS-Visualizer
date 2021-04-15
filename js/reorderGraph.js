@@ -291,10 +291,10 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo){
   return matrix;
 }
 
-function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
+function generateMatrixGraphic(parsed,tipo){
 
   var margin = {top: 80, right: 0, bottom: 10, left: 80},
-    width = 720 - margin.left - margin.right,
+    width = 1200 - margin.left - margin.right,
     height = 720 - margin.top - margin.bottom;
 
     svg = d3.select("#my_dataviz").append("svg")

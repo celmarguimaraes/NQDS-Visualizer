@@ -159,6 +159,7 @@ function initial_order_permute() {
   reorder.permutation(matrix[0].length));
 }
 
+// Query data treatment to a matrix
 function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo){
   var matrix = [],
       column_labels = linesfilling.filter(onlyUnique),
@@ -310,6 +311,7 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   document.getElementById("exportImage").removeAttribute("hidden");
 }
 
+// LEGACY
 function generateGraphic(parsed,maxRangeModels,minRangeModels,tipo){
 
   // set the dimensions and margins of the graph

@@ -63,19 +63,19 @@ function table(json, width, height, tipo) {
 	let mousemove = function (d) {
 		if (tipo == 'MW') {
 			tooltip
-				.html("Well: " + d.Poco + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d.ValorAQNS))
+				.html("Well: " + d.Poco + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d))
 				.style("left", (d3.mouse(this)[0]) + "px")
-				.style("top", (d3.mouse(this)[1] + 490) + "px")
+				.style("top", (d3.mouse(this)[1] + 400) + "px")
 		} else if (tipo == 'MA') {
 			tooltip
-				.html("Attribute: " + d.Atributo + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d.ValorAQNS))
+				.html("Attribute: " + d.Atributo + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d))
 				.style("left", (d3.mouse(this)[0]) + "px")
-				.style("top", (d3.mouse(this)[1] + 490) + "px")
+				.style("top", (d3.mouse(this)[1] + 400) + "px")
 		} else {
 			tooltip
-				.html("Well: " + d.Poco + "<br>Attribute: " + d.Atributo + "<br>NQDS Value: " + textAQNS(d.ValorAQNS))
+				.html("Well: " + d.Poco + "<br>Attribute: " + d.Atributo + "<br>NQDS Value: " + textAQNS(d))
 				.style("left", (d3.mouse(this)[0]) + "px")
-				.style("top", (d3.mouse(this)[1] + 490) + "px")
+				.style("top", (d3.mouse(this)[1] + 400) + "px")
 		}
 	}
 	let mouseleave = function () {

@@ -191,5 +191,6 @@ function constructButtonFilter(){
 }
 
 const clearGraphicArea = () => {
+  d3.select('#dataviz_legend').select('svg').remove();
   d3.select('#my_dataviz').select('svg').remove();
 };

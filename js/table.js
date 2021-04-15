@@ -1,4 +1,4 @@
-function table(json, width, height) {
+function table(json, width, height, tipo) {
     var matrix = json.matrix,
 	row_labels = json.row_labels,
 	col_labels = json.col_labels,
@@ -29,7 +29,7 @@ function table(json, width, height) {
     col_inv = reorder.inverse_permutation(col_perm);
 
 	color = d3.scaleLinear()
-		.range(['white', "#00cc66", "#ff0000"])
+		.range(['#c7c6c3', "#00cc66", "#ff0000"])
 		.domain([0,1,6]);
 
     var gridSize = Math.min(width / matrix.length, height / matrix[0].length),
@@ -49,7 +49,7 @@ function table(json, width, height) {
             .attr("class", "row")
             .attr("transform", function(d, i) {
 		return "translate(0,"+y(i)+")";
-	    });
+	    })
 
     var cell = row.selectAll(".cell")
 	    .data(function(d) { return d; })
@@ -58,7 +58,10 @@ function table(json, width, height) {
             .attr("x", function(d, i) { return x(i); })
             .attr("width", w)
             .attr("height", h)
-            .style("fill", function(d) { return color(d); });
+            .style("fill", function(d) { return color(d); })
+			.style("stroke-width", 4)
+			  .style("stroke", "none")
+			  .style("opacity", 0.9);
 
     row.append("line")
 	.attr("x2", tw);
@@ -75,7 +78,7 @@ function table(json, width, height) {
 	    .enter().append("g")
 	    .attr("id", function(d, i) { return "col"+i; })
 	    .attr("class", "col")
-	    .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+	    .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; })
 
     col.append("line")
 	.attr("x1", -th);

@@ -46,6 +46,7 @@
     <div class="row border-bottom col-12" id="buttonFilter"></div>
     </div>
     <div id="divCarregando" class='h3 text-center col-12' style='display:none;'>Grafico sendo carregado, aguarde...</div>
+    <div id="dataviz_legend" height="0px"></div>
     <div id="my_dataviz" height="0px"></div>
     <div class="row">
       <div class='col-5'></div>

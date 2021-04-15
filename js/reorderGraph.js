@@ -6,7 +6,7 @@ const textAQNS = (value) => {
   let text = "";
   switch (value) {
     case '0':
-        text += "Indisponivel"
+        text += "Unavailable"
         break;
     case '1':
         text += "Excelent"
@@ -27,7 +27,7 @@ const textAQNS = (value) => {
         text += "Insatisfactory"
         break;
     case 0:
-        text+= "Indisponivel"
+        text+= "Unavailable"
         break;
     case 1:
         text += "Excelent"
@@ -53,8 +53,8 @@ const textAQNS = (value) => {
 
 // Build color scale
 let myColor = d3.scaleLinear()
-  .range(["#00cc66", "#ff0000"])
-  .domain([1,6]);
+  .range(['#c7c6c3', "#00cc66", "#ff0000"])
+  .domain([0,1,6]);
 
 // create a tooltip
 let tooltip = d3.select("#my_dataviz")
@@ -138,7 +138,7 @@ function construirLegenda(svg,myColor,tipo){
 
   let xRectBuffer = 500;
   let yRectBuffer = -40;
-  let dataArray   = ['1','2','3','4','5','6'];
+  let dataArray   = ['0','1','2','3','4','5','6'];
 
   //Rectangles subtitle
   svg.append("g").selectAll("rect")
@@ -146,7 +146,7 @@ function construirLegenda(svg,myColor,tipo){
           .enter()
           .append("rect")
           .attr("x",function(d){
-              var spacing = 100;
+              var spacing = 108;
               return xRectBuffer+(d-1)*spacing
           })
           .attr("y",yRectBuffer)
@@ -166,7 +166,7 @@ function construirLegenda(svg,myColor,tipo){
         .enter()
         .append("text")
         .attr("x",function(d){
-          var spacing = 100;
+          var spacing = 108;
           return xTextBuffer+(d-1)*spacing;
         })
         .attr("y",yTextBuffer)
@@ -293,15 +293,29 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo){
 
 function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
 
-  var margin = {top: 80, right: 0, bottom: 10, left: 80},
-    width = 720 - margin.left - margin.right,
+  // Legend SVG
+  var margin_legend = {top: 80, right: 0, bottom: 10, left: 80},
+    width_legend = 1280 - margin_legend.left - margin_legend.right,
+    height_legend = 100 - margin_legend.top - margin_legend.bottom;
+
+  svg_legend = d3.select("#dataviz_legend").append("svg")
+    .attr("width", width_legend + margin_legend.left + margin_legend.right)
+    .attr("height", height_legend + margin_legend.top + margin_legend.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin_legend.left + "," + margin_legend.top + ")");
+
+    construirLegenda(svg_legend,myColor,tipo);
+
+  // Graph SVG
+  var margin = { top: 80, right: 0, bottom: 10, left: 80 },
+    width = 1280 - margin.left - margin.right,
     height = 720 - margin.top - margin.bottom;
 
-    svg = d3.select("#my_dataviz").append("svg")
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
-	    .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  svg = d3.select("#my_dataviz").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   var unique_row_labels,
       unique_col_labels,
@@ -332,7 +346,8 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   var matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
   //console.log('matrix', matrix)
 
-  table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels}, width, height);
+  table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},
+     width, height, tipo);
 
   optimal_leaf_order_permute(matrix)
 

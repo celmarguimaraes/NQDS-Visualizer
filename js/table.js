@@ -39,7 +39,7 @@ function table(json, width, height, tipo) {
 	tw = w*m;
 
     var x = function(i) { return w*col_inv[i]; },
-	y = function(i) { return h*row_inv[i]; };
+		y = function(i) { return h*row_inv[i]; };
 
 	// create a tooltip
 	let tooltip = d3.select("#my_dataviz")
@@ -60,23 +60,26 @@ function table(json, width, height, tipo) {
 			.style("stroke", "black")
 			.style("opacity", 0.9)
 	}
-	let mousemove = function (d) {
+
+	let mousemove = function (d, i) {
 		if (tipo == 'MW') {
 			tooltip
-				.html("Well: " + d.Poco + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d))
-				.style("left", (d3.mouse(this)[0]) + "px")
-				.style("top", (d3.mouse(this)[1] + 400) + "px")
+				.html("Model: " + col_labels[i] + "<br>NQDS Value: " + textAQNS(d))
+				.style("left", (d3.mouse(this)[0] + 100) + "px")
+				.style("top", (d3.mouse(this)[1] + 650) + "px")
 		} else if (tipo == 'MA') {
 			tooltip
-				.html("Attribute: " + d.Atributo + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d))
-				.style("left", (d3.mouse(this)[0]) + "px")
-				.style("top", (d3.mouse(this)[1] + 400) + "px")
+				.html("Model: " + col_labels[i] + "<br>NQDS Value: " + textAQNS(d))
+				.style("left", (d3.mouse(this)[0] + 100) + "px")
+				.style("top", (d3.mouse(this)[1] + 650) + "px")
 		} else {
 			tooltip
-				.html("Well: " + d.Poco + "<br>Attribute: " + d.Atributo + "<br>NQDS Value: " + textAQNS(d))
-				.style("left", (d3.mouse(this)[0]) + "px")
-				.style("top", (d3.mouse(this)[1] + 400) + "px")
+				.html("Attribute: " + col_labels[i] + "<br>NQDS Value: " + textAQNS(d))
+				.style("left", (d3.mouse(this)[0] + 100) + "px")
+				.style("top", (d3.mouse(this)[1] + 650) + "px")
 		}
+		//console.log('col_labels', col_labels);
+		//console.log('d', d);
 	}
 	let mouseleave = function () {
 		tooltip

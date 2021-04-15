@@ -56,51 +56,6 @@ let myColor = d3.scaleLinear()
   .range(['#c7c6c3', "#00cc66", "#ff0000"])
   .domain([0,1,6]);
 
-// create a tooltip
-let tooltip = d3.select("#my_dataviz")
-.append("div")
-.style("opacity", 0)
-.attr("class", "tooltip")
-.style("background-color", "white")
-.style("border", "solid")
-.style("border-width", "2px")
-.style("border-radius", "5px")
-.style("padding", "5px");
-
-// Three function that change the tooltip when user hover / move / leave a cell
-let mouseover = function() {
-  tooltip
-    .style("opacity", 1)
-  d3.select(this)
-    .style("stroke", "black")
-    .style("opacity", 1)
-}
-let mousemove = function(d) {
-  if(tipoGrafico=='MW'){
-    tooltip
-    .html("Well: "+d.Poco+"<br>Model: "+d.Modelo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
-    .style("left", (d3.mouse(this)[0]) + "px")
-    .style("top", (d3.mouse(this)[1]+430) + "px")
-  }else if(tipoGrafico=='MA'){
-    tooltip
-    .html("Attribute: "+d.Atributo+"<br>Model: "+d.Modelo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
-    .style("left", (d3.mouse(this)[0]) + "px")
-    .style("top", (d3.mouse(this)[1]+430) + "px")
-  }else{
-    tooltip
-    .html("Well: "+d.Poco+"<br>Attribute: "+d.Atributo+"<br>NQDS Value: "+textAQNS(d.ValorAQNS))
-    .style("left", (d3.mouse(this)[0]) + "px")
-    .style("top", (d3.mouse(this)[1]+430) + "px")
-  }  
-}
-let mouseleave = function() {
-  tooltip
-    .style("opacity", 0)
-  d3.select(this)
-    .style("stroke", "none")
-    .style("opacity", 0.8)
-}
-
 function construirLegenda(svg,myColor,tipo){
   // Add title to graph
   if(tipo=="MW"){
@@ -146,7 +101,7 @@ function construirLegenda(svg,myColor,tipo){
           .enter()
           .append("rect")
           .attr("x",function(d){
-              var spacing = 108;
+              var spacing = 107;
               return xRectBuffer+(d-1)*spacing
           })
           .attr("y",yRectBuffer)
@@ -157,7 +112,7 @@ function construirLegenda(svg,myColor,tipo){
           .style("stroke", "none")
           .style("opacity", 0.8);
 
-  let xTextBuffer = 535;
+  let xTextBuffer = 532;
   let yTextBuffer = -23;
 
   // Add a title to the legend
@@ -166,7 +121,7 @@ function construirLegenda(svg,myColor,tipo){
         .enter()
         .append("text")
         .attr("x",function(d){
-          var spacing = 108;
+          var spacing = 107;
           return xTextBuffer+(d-1)*spacing;
         })
         .attr("y",yTextBuffer)
@@ -309,7 +264,7 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   // Graph SVG
   var margin = { top: 80, right: 0, bottom: 10, left: 80 },
     width = 1280 - margin.left - margin.right,
-    height = 720 - margin.top - margin.bottom;
+    height = 620 - margin.top - margin.bottom;
 
   svg = d3.select("#my_dataviz").append("svg")
     .attr("width", width + margin.left + margin.right)

@@ -41,6 +41,51 @@ function table(json, width, height, tipo) {
     var x = function(i) { return w*col_inv[i]; },
 	y = function(i) { return h*row_inv[i]; };
 
+	// create a tooltip
+	let tooltip = d3.select("#my_dataviz")
+		.append("div")
+		.style("opacity", 0)
+		.attr("class", "tooltip")
+		.style("background-color", "white")
+		.style("border", "solid")
+		.style("border-width", "2px")
+		.style("border-radius", "5px")
+		.style("padding", "5px");
+
+	// Three function that change the tooltip when user hover / move / leave a cell
+	let mouseover = function () {
+		tooltip
+			.style("opacity", 0.9)
+		d3.select(this)
+			.style("stroke", "black")
+			.style("opacity", 0.9)
+	}
+	let mousemove = function (d) {
+		if (tipo == 'MW') {
+			tooltip
+				.html("Well: " + d.Poco + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d.ValorAQNS))
+				.style("left", (d3.mouse(this)[0]) + "px")
+				.style("top", (d3.mouse(this)[1] + 490) + "px")
+		} else if (tipo == 'MA') {
+			tooltip
+				.html("Attribute: " + d.Atributo + "<br>Model: " + d.Modelo + "<br>NQDS Value: " + textAQNS(d.ValorAQNS))
+				.style("left", (d3.mouse(this)[0]) + "px")
+				.style("top", (d3.mouse(this)[1] + 490) + "px")
+		} else {
+			tooltip
+				.html("Well: " + d.Poco + "<br>Attribute: " + d.Atributo + "<br>NQDS Value: " + textAQNS(d.ValorAQNS))
+				.style("left", (d3.mouse(this)[0]) + "px")
+				.style("top", (d3.mouse(this)[1] + 490) + "px")
+		}
+	}
+	let mouseleave = function () {
+		tooltip
+			.style("opacity", 0)
+		d3.select(this)
+			.style("stroke", "none")
+			.style("opacity", 0.9)
+	}
+
     var row = svg
 	    .selectAll(".row")
 	    .data(matrix, function(d, i) { return 'row'+i; })
@@ -61,7 +106,10 @@ function table(json, width, height, tipo) {
             .style("fill", function(d) { return color(d); })
 			.style("stroke-width", 4)
 			  .style("stroke", "none")
-			  .style("opacity", 0.9);
+			  .style("opacity", 0.9)
+			  .on("mouseover", mouseover)
+			  .on("mousemove", mousemove)
+			  .on("mouseleave", mouseleave);
 
     row.append("line")
 	.attr("x2", tw);

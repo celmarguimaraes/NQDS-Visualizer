@@ -204,8 +204,7 @@ function initial_order_permute() {
   reorder.permutation(matrix[0].length));
 }
 
-function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo,
-  minRangeModels, maxRangeModels){
+function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo){
   var matrix = [],
       column_labels = linesfilling.filter(onlyUnique),
       row_labels = colsfilling.filter(onlyUnique);
@@ -330,8 +329,7 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   unique_col_labels = row_values.filter(onlyUnique);
   unique_row_labels = column_values.filter(onlyUnique);
  
-  var matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo,
-    minRangeModels, maxRangeModels);
+  var matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
   //console.log('matrix', matrix)
 
   table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels}, width, height);

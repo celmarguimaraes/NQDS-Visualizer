@@ -20,6 +20,7 @@ function table(json, width, height, tipo) {
 	svg = d3.select("#my_dataviz").append("svg")
 		.attr("width", width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom)
+		.attr("id","svg")
 		.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -83,7 +84,6 @@ function table(json, width, height, tipo) {
 			.style("stroke", "black")
 			.style("opacity", 0.9)
 	}
-
 	let mousemove = function (d, i) {
 		if (tipo == 'MW') {
 			tooltip
@@ -111,6 +111,7 @@ function table(json, width, height, tipo) {
 			.style("stroke", "none")
 			.style("opacity", 0.9)
 	}
+
 	// Graphic matrix
     var row = svg
 	    .selectAll(".row")

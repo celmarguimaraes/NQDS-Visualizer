@@ -8,6 +8,33 @@ function table(json, width, height, tipo) {
 	n = matrix.length,
 	m = matrix[0].length,
 	i;
+	color = d3.scaleLinear()
+		.range(['#c7c6c3', "#00cc66", "#ff0000"])
+		.domain([0,1,6]);
+
+	// Graph SVG
+	var margin = { top: 80, right: 0, bottom: 10, left: 80 },
+		width = 1280 - margin.left - margin.right,
+		height = 620 - margin.top - margin.bottom;
+
+	svg = d3.select("#my_dataviz").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	// Legend SVG
+	var margin_legend = { top: 80, right: 0, bottom: 10, left: 80 },
+		width_legend = 1280 - margin_legend.left - margin_legend.right,
+		height_legend = 100 - margin_legend.top - margin_legend.bottom;
+
+	svg_legend = d3.select("#dataviz_legend").append("svg")
+		.attr("width", width_legend + margin_legend.left + margin_legend.right)
+		.attr("height", height_legend + margin_legend.top + margin_legend.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin_legend.left + "," + margin_legend.top + ")");
+
+	construirLegenda(svg_legend, color, tipo);
 
     if (! row_labels) {
 	row_labels = Array(n);
@@ -27,10 +54,6 @@ function table(json, width, height, tipo) {
     if (! col_perm)
 	col_perm = reorder.permutation(m);
     col_inv = reorder.inverse_permutation(col_perm);
-
-	color = d3.scaleLinear()
-		.range(['#c7c6c3', "#00cc66", "#ff0000"])
-		.domain([0,1,6]);
 
     var gridSize = Math.min(width / matrix.length, height / matrix[0].length),
 	h = gridSize,
@@ -88,19 +111,6 @@ function table(json, width, height, tipo) {
 			.style("stroke", "none")
 			.style("opacity", 0.9)
 	}
-	// Legend SVG
-	var margin_legend = { top: 80, right: 0, bottom: 10, left: 80 },
-		width_legend = 1280 - margin_legend.left - margin_legend.right,
-		height_legend = 100 - margin_legend.top - margin_legend.bottom;
-
-	svg_legend = d3.select("#dataviz_legend").append("svg")
-		.attr("width", width_legend + margin_legend.left + margin_legend.right)
-		.attr("height", height_legend + margin_legend.top + margin_legend.bottom)
-		.append("g")
-		.attr("transform", "translate(" + margin_legend.left + "," + margin_legend.top + ")");
-
-	construirLegenda(svg_legend, color, tipo);
-
 	// Graphic matrix
     var row = svg
 	    .selectAll(".row")

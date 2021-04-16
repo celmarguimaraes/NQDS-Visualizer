@@ -1,4 +1,4 @@
-let svg, currentGraphic, timesClicked= 0;
+let svg, currentGraphic, timesClicked= 0, matrix = [];
 
 //Changes the text or number to text value for the tooltip in the graphic
 const textAQNS = (value) => {
@@ -136,25 +136,30 @@ function onlyUnique (value, index, self) {
   return self.indexOf(value) === index;
 }
 
-function add_listener_order_buttons(matrix,parsed,maxRangeModels,minRangeModels,tipo){
+function add_listener_order_buttons(parsed,
+  row_values,column_values, unique_col_labels,unique_row_labels,tipo){
+
   buttonInitialOrder = document.getElementById("btnIO");
   buttonInitialOrder.addEventListener("click", function () {
     clearGraphicArea();
-    generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo);
+    matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
+    table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
     initial_order_permute(matrix);
   });
 
   buttonRandomPermute = document.getElementById("btnRO");
   buttonRandomPermute.addEventListener("click", function () {
     clearGraphicArea();
-    generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo);
+    matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
+    table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
     random_permute(matrix);
   });
 
   buttonLeafOrderPermute = document.getElementById("btnLO");
   buttonLeafOrderPermute.addEventListener("click", function () {
     clearGraphicArea();
-    generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo);
+    matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
+    table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
     optimal_leaf_order_permute(matrix);
   });
 }
@@ -269,19 +274,6 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo){
 
 function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
 
-  var matrix = [];
-
-  // Graph SVG
-  var margin = { top: 80, right: 0, bottom: 10, left: 80 },
-    width = 1280 - margin.left - margin.right,
-    height = 620 - margin.top - margin.bottom;
-
-  svg = d3.select("#my_dataviz").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
   var unique_row_labels,
       unique_col_labels,
       row_values,
@@ -307,14 +299,11 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
 
   unique_col_labels = row_values.filter(onlyUnique);
   unique_row_labels = column_values.filter(onlyUnique);
- 
-  var matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
-
-  table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},
-     width, height, tipo);
      
   document.getElementById("orderButtonGroup").removeAttribute("hidden");
-  add_listener_order_buttons(matrix, parsed,maxRangeModels,minRangeModels,tipo);
+  add_listener_order_buttons(parsed,
+    row_values,column_values, unique_col_labels,unique_row_labels,tipo);
+  document.getElementById("btnIO").click();
 
   document.getElementById("exportImage").removeAttribute("hidden");
 }

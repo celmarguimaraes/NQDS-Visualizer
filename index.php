@@ -21,6 +21,7 @@
       let tipoGrafico;
       let versaoGraf,iteracaoGraf, dataGraf;
     </script>
+
   </head>
 
   <body>
@@ -47,6 +48,11 @@
     </div>
     <div id="divCarregando" class='h3 text-center col-12' style='display:none;'>Grafico sendo carregado, aguarde...</div>
     <div id="dataviz_legend" height="0px"></div>
+        <div class="btn-group btn-group px-5 mr-5" id="orderButtonGroup" hidden>
+            <button type="button" id="btnIO" class="btn btn-secondary">Initial Order</button>
+            <button type="button" id="btnRO" class="btn btn-secondary">Random Order</button>
+            <button type="button" id="btnLO" class="btn btn-secondary">Leaf Order</button>
+        </div>
     <div id="my_dataviz" height="0px"></div>
     <div class="row">
       <div class='col-5'></div>

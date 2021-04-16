@@ -1,4 +1,3 @@
-
 let svg, currentGraphic, timesClicked= 0;
 
 //Changes the text or number to text value for the tooltip in the graphic
@@ -137,8 +136,31 @@ function onlyUnique (value, index, self) {
   return self.indexOf(value) === index;
 }
 
+function add_listener_order_buttons(matrix,parsed,maxRangeModels,minRangeModels,tipo){
+  buttonInitialOrder = document.getElementById("btnIO");
+  buttonInitialOrder.addEventListener("click", function () {
+    clearGraphicArea();
+    generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo);
+    initial_order_permute(matrix);
+  });
+
+  buttonRandomPermute = document.getElementById("btnRO");
+  buttonRandomPermute.addEventListener("click", function () {
+    clearGraphicArea();
+    generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo);
+    random_permute(matrix);
+  });
+
+  buttonLeafOrderPermute = document.getElementById("btnLO");
+  buttonLeafOrderPermute.addEventListener("click", function () {
+    clearGraphicArea();
+    generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo);
+    optimal_leaf_order_permute(matrix);
+  });
+}
+
 // 3 Funções da API reorder.js https://github.com/jdfekete/reorder.js
-function random_permute() {
+function random_permute(matrix) {
   table.order(reorder.randomPermutation(matrix.length),
   reorder.randomPermutation(matrix[0].length));
 }
@@ -154,7 +176,7 @@ var transpose = reorder.transpose(matrix),
   table.order(row_perm, col_perm);
 }
 
-function initial_order_permute() {
+function initial_order_permute(matrix) {
   table.order(reorder.permutation(matrix.length),
   reorder.permutation(matrix[0].length));
 }
@@ -234,7 +256,6 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo){
       }
     }
   }
-  //console.log('modelMatrix', blankMatrix)
 
   for (dummyLine = 0; dummyLine < line_count; dummyLine++) {
     matrix[dummyLine] = [];
@@ -242,25 +263,13 @@ function arrayParsedToMatrix(parsed, linesfilling, colsfilling, tipo){
       matrix[dummyLine][dummyColumn] = blankMatrix[dummyLine][dummyColumn].ValorAQNS;
     }
   }
-  console.log('finalMatrix', matrix)
 
   return matrix;
 }
 
 function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
 
-  // Legend SVG
-  var margin_legend = {top: 80, right: 0, bottom: 10, left: 80},
-    width_legend = 1280 - margin_legend.left - margin_legend.right,
-    height_legend = 100 - margin_legend.top - margin_legend.bottom;
-
-  svg_legend = d3.select("#dataviz_legend").append("svg")
-    .attr("width", width_legend + margin_legend.left + margin_legend.right)
-    .attr("height", height_legend + margin_legend.top + margin_legend.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin_legend.left + "," + margin_legend.top + ")");
-
-    construirLegenda(svg_legend,myColor,tipo);
+  var matrix = [];
 
   // Graph SVG
   var margin = { top: 80, right: 0, bottom: 10, left: 80 },
@@ -300,14 +309,13 @@ function generateMatrixGraphic(parsed,maxRangeModels,minRangeModels,tipo){
   unique_row_labels = column_values.filter(onlyUnique);
  
   var matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
-  //console.log('matrix', matrix)
 
   table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},
      width, height, tipo);
+     
+  document.getElementById("orderButtonGroup").removeAttribute("hidden");
+  add_listener_order_buttons(matrix, parsed,maxRangeModels,minRangeModels,tipo);
 
-  optimal_leaf_order_permute(matrix)
-
-  //Set visible the button to export image of the graphic
   document.getElementById("exportImage").removeAttribute("hidden");
 }
 

@@ -74,7 +74,7 @@ function table(json, width, height, tipo) {
 				.style("top", (d3.mouse(this)[1] + 650) + "px")
 		} else {
 			tooltip
-				.html("Attribute: " + col_labels[i] + "<br>NQDS Value: " + textAQNS(d))
+				.html("Well: " + col_labels[i] + "<br>NQDS Value: " + textAQNS(d))
 				.style("left", (d3.mouse(this)[0] + 100) + "px")
 				.style("top", (d3.mouse(this)[1] + 650) + "px")
 		}
@@ -88,7 +88,20 @@ function table(json, width, height, tipo) {
 			.style("stroke", "none")
 			.style("opacity", 0.9)
 	}
+	// Legend SVG
+	var margin_legend = { top: 80, right: 0, bottom: 10, left: 80 },
+		width_legend = 1280 - margin_legend.left - margin_legend.right,
+		height_legend = 100 - margin_legend.top - margin_legend.bottom;
 
+	svg_legend = d3.select("#dataviz_legend").append("svg")
+		.attr("width", width_legend + margin_legend.left + margin_legend.right)
+		.attr("height", height_legend + margin_legend.top + margin_legend.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin_legend.left + "," + margin_legend.top + ")");
+
+	construirLegenda(svg_legend, color, tipo);
+
+	// Graphic matrix
     var row = svg
 	    .selectAll(".row")
 	    .data(matrix, function(d, i) { return 'row'+i; })

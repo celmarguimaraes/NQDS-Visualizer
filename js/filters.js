@@ -11,10 +11,6 @@ function clicaBotao(tipoGraf){
   
   const minRangeModels = parseInt(slider.noUiSlider.get()[0]);
   const maxRangeModels = parseInt(slider.noUiSlider.get()[1]);
-  
-  console.log('minRangeModels',minRangeModels);
-  console.log('maxRangeModels',maxRangeModels);
-
   //Percorrendo filtro de Pocos
   for(let i=0;i<pocos.length;i++){
     if( document.getElementById(pocos[i].id).checked ){

@@ -72,7 +72,6 @@
     <script type="text/javascript" src="js/loadData.js"></script>
     <script type="text/javascript" src="js/filters.js"></script>
     <script type="text/javascript" src="js/reorderGraph.js"></script>
-    <!--<script type="text/javascript" src="js/gerarGrafico.js"></script>-->
     <script type="text/javascript" src="js/consultaGrafico.js"></script>
   </body>
 </html>

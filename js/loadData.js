@@ -37,6 +37,7 @@ function consultaBanco(tipoconsulta){
     data: dataGraf
   }
 
+  console.log(JSON.stringify(dados))
   return fetch('main/consultabanco.php', {
     method: 'POST',
     body: JSON.stringify(dados),

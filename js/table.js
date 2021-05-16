@@ -57,7 +57,7 @@ function table(json, width, height, tipo) {
     col_inv = reorder.inverse_permutation(col_perm);
 
     var gridSize = Math.min(width / matrix.length, height / matrix[0].length)*2,
-	h = gridSize,
+	h = (620/row_labels.length)/1.5, // scales to full height w/ selected y axis features
 	th = h*n,
 	w = gridSize,
 	tw = w*m;

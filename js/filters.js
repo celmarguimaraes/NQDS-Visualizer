@@ -148,7 +148,7 @@ function divFiltroAtributos(atributos){
 
   noUiSlider.create(slider, {
     start: [parseInt(atributos[0].Min_Modelo.substring(4,8)),
-       parseInt(atributos[0].Max_Modelo.substring(4,8))],
+       parseInt(atributos[0].Max_Modelo.substring(4,8))/5],
     connect: true,
     step: 1,
     orientation: 'horizontal', // 'horizontal' or 'vertical'

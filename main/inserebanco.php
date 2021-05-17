@@ -2,7 +2,7 @@
 
     require __DIR__ . '/../classe/Insercao.php';
 
-    ini_set('max_execution_time',120);
+    ini_set('max_execution_time',0);
     $json = file_get_contents('php://input');
     $data = json_decode($json,true);
     $iteracao = intval($data['iteracao']);

@@ -179,7 +179,7 @@ function table(json, width, height, tipo) {
 	col_perm = cols;
 	col_inv = reorder.inverse_permutation(col_perm);
 	
-	var t = svg;
+	var t = svg.transition().duration(1000);
 
 	t.selectAll(".row")
             .attr("transform", function(d, i) {

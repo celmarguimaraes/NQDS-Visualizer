@@ -155,12 +155,28 @@ function add_listener_order_buttons(parsed,
     optimal_leaf_order_permute(matrix);
   });
 
-  buttonLeafOrderPermute = document.getElementById("btnFVS");
-  buttonLeafOrderPermute.addEventListener("click", function () {
+  buttonFVSOrder = document.getElementById("btnFVS");
+  buttonFVSOrder.addEventListener("click", function () {
     clearGraphicArea();
     matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
     table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
     fvsSort(matrix);
+  });
+
+  buttonPolarSort = document.getElementById("btnPS");
+  buttonPolarSort.addEventListener("click", function () {
+    clearGraphicArea();
+    matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
+    table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
+    polarSort(matrix);
+  });
+
+  buttonBlockSort = document.getElementById("btnBS");
+  buttonBlockSort.addEventListener("click", function () {
+    clearGraphicArea();
+    matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
+    table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
+    blockSort(matrix);
   });
 }
 
@@ -201,12 +217,12 @@ function fvsSort(matrix) {
   for (let i = 0; i < numberOfRows; i++) rowPerm[i] = reorder.mean(matrix[i]);
 
   // Resultado das médias aritméticas das colunas:
-  for (let i = 0; i < this.numberOfCols; i++) colPerm[i] = reorder.meantranspose(matrix, i);
+  for (let i = 0; i < numberOfCols; i++) colPerm[i] = reorder.meantranspose(matrix, i);
 
   table.order(reorder.sort_order(rowPerm), reorder.sort_order(colPerm));
 }
 
-function polarSort() {
+function polarSort(matrix) {
   function mds(distanceMatrix, dimensions = 2) {
       /* square distances */
       let M = numeric.mul(-.5, numeric.pow(distanceMatrix, 2));
@@ -237,7 +253,7 @@ function polarSort() {
   };
 
 
-  let distanceMatrix = reorder.dist()(this.matrix),
+  let distanceMatrix = reorder.dist()(matrix),
       cartesianCoords = mds(distanceMatrix, 2),
       polarCoords = [],
       xB = reorder.mean(reorder.transpose(cartesianCoords)[0]),
@@ -265,7 +281,7 @@ function polarSort() {
   }
 
   let rowPerm = reorder.sort_order(reorder.transpose(polarCoords)[1]),
-      colPerm = reorder.permutation(this.numberOfCols);
+      colPerm = reorder.permutation(numberOfCols);
 
   polarCoords = reorder.permute(polarCoords, rowPerm);
 
@@ -273,8 +289,8 @@ function polarSort() {
       pair_distance = 0,
       head = 0;
 
-  for (let i = 0; i < this.numberOfRows - 1; ++i) {
-      for (let j = i + 1; j < this.numberOfCols; ++j, i++) {
+  for (let i = 0; i < numberOfRows - 1; ++i) {
+      for (let j = i + 1; j < numberOfCols; ++j, i++) {
           let theta1 = polarCoords[i][1],
               theta2 = polarCoords[j][1];
 
@@ -289,8 +305,8 @@ function polarSort() {
 
   var circularListPerm = [];
 
-  for (let index in this.matrix) {
-      if (head > this.numberOfRows - 1) head = 0;
+  for (let index in matrix) {
+      if (head > numberOfRows - 1) head = 0;
       circularListPerm.push(head++);
   }
 
@@ -299,7 +315,7 @@ function polarSort() {
   table.order(rowPerm, colPerm);
 }
 
-function blockSort() {
+function blockSort(matrix) {
   let orderOfColumns = [],
       optimals = [],
       columns = [];
@@ -307,12 +323,12 @@ function blockSort() {
   const SISTERHOOD_BOUNDARY = 0.6;
 
   // Get properties of columns:
-  for (let i = 0; i < this.numberOfCols; ++i) {
+  for (let i = 0; i < numberOfCols; ++i) {
       let col = { 'list': [], 'noise': null, 'similarity': null, 'index': i },
           numberZeros = 0;
 
-      for (let j = 0; j < this.numberOfRows; ++j) {
-          let cellVal = this.matrix[j][i],
+      for (let j = 0; j < numberOfRows; ++j) {
+          let cellVal = matrix[j][i],
               boolVal = (cellVal >= 0.5);
           col.list.push(boolVal);
 
@@ -373,7 +389,7 @@ function blockSort() {
 
       // Make optimal column:
       let optimal = [];
-      for (let i = 0; i < this.numberOfRows; ++i) {
+      for (let i = 0; i < numberOfRows; ++i) {
           let numberOfZeros = 0;
           for (let col of columns.slice(0, numberOfSisters)) {
               if (!col.list[i]) {
@@ -390,10 +406,10 @@ function blockSort() {
   }
 
   // Populate row perm:
-  let orderOfRows = reorder.permutation(this.numberOfRows);
+  let orderOfRows = reorder.permutation(numberOfRows);
 
   for (let optimal of optimals.reverse()) {
-      for (let i = 1; i < this.numberOfRows; ++i) {
+      for (let i = 1; i < numberOfRows; ++i) {
           for (let j = i; j > 0; --j) {
               if (optimal[j] && !optimal[j - 1]) {
                   for (let auxOptimal of optimals) {

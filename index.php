@@ -52,6 +52,8 @@
             <button type="button" id="btnIO" class="btn btn-secondary">Initial Order</button>
             <button type="button" id="btnLO" class="btn btn-secondary">Leaf Order</button>
             <button type="button" id="btnFVS" class="btn btn-secondary">FVS Order</button>
+            <button type="button" id="btnPS" class="btn btn-secondary">Polar Sort</button>
+            <button type="button" id="btnBS" class="btn btn-secondary">Block Sort</button>
         </div>
     <div id="my_dataviz" height="0px"></div>
     <div class="row">
@@ -68,6 +70,8 @@
     <script type="text/javascript" src="js/lib/d3-scale-chromatic.v1.min.js"></script>
     <script type="text/javascript" src="js/lib/saveImage.js"></script>
     <script type="text/javascript" src="js/lib/wNumb.js"></script>
+    <script type="text/javascript" src="js/lib/math.js"></script>
+    <script type="text/javascript" src="js/lib/numeric.min.js"></script>
     <script type="text/javascript" src="js/table.js"></script>
     <script type="text/javascript" src="js/loadData.js"></script>
     <script type="text/javascript" src="js/filters.js"></script>

@@ -147,20 +147,20 @@ function add_listener_order_buttons(parsed,
     initial_order_permute(matrix);
   });
 
-  buttonRandomPermute = document.getElementById("btnRO");
-  buttonRandomPermute.addEventListener("click", function () {
-    clearGraphicArea();
-    matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
-    table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
-    random_permute(matrix);
-  });
-
   buttonLeafOrderPermute = document.getElementById("btnLO");
   buttonLeafOrderPermute.addEventListener("click", function () {
     clearGraphicArea();
     matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
     table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
     optimal_leaf_order_permute(matrix);
+  });
+
+  buttonLeafOrderPermute = document.getElementById("btnFVS");
+  buttonLeafOrderPermute.addEventListener("click", function () {
+    clearGraphicArea();
+    matrix = arrayParsedToMatrix(parsed, row_values, column_values, tipo);
+    table({matrix: matrix, row_labels: unique_row_labels, col_labels: unique_col_labels},tipo);
+    fvsSort(matrix);
   });
 }
 
@@ -184,6 +184,236 @@ var transpose = reorder.transpose(matrix),
 function initial_order_permute(matrix) {
   table.order(reorder.permutation(matrix.length),
   reorder.permutation(matrix[0].length));
+}
+
+// Aditional ordering methods
+// Lab. SEIS FT - Unicamp 2021
+// From Miguel Amaral, available at:
+// https://github.com/migueloiro/tcc-reorder
+// ---------------------------------------------------------------------------
+// Adapted in order to encapsulate each individual method
+
+function fvsSort(matrix) {
+  let rowPerm = new Array(numberOfRows),
+      colPerm = new Array(numberOfCols);
+
+  // Resultado das médias aritméticas das linhas:
+  for (let i = 0; i < numberOfRows; i++) rowPerm[i] = reorder.mean(matrix[i]);
+
+  // Resultado das médias aritméticas das colunas:
+  for (let i = 0; i < this.numberOfCols; i++) colPerm[i] = reorder.meantranspose(matrix, i);
+
+  table.order(reorder.sort_order(rowPerm), reorder.sort_order(colPerm));
+}
+
+function polarSort() {
+  function mds(distanceMatrix, dimensions = 2) {
+      /* square distances */
+      let M = numeric.mul(-.5, numeric.pow(distanceMatrix, 2));
+
+      let rowMeans = [],
+          colMeans = [];
+
+      for (let i in M) {
+          rowMeans.push(reorder.mean(M[i]));
+          colMeans.push(reorder.meantranspose(M, i))
+      }
+
+      let totalMean = reorder.mean(rowMeans);
+
+      for (let i in M) {
+          for (let j in M[0]) {
+              M[i][j] += totalMean - rowMeans[i] - colMeans[j];
+          }
+      }
+
+      // take the SVD of the double centred matrix, and return the points from it
+      let ret = numeric.svd(M),
+          eigenValues = numeric.sqrt(ret.S);
+
+      return ret.U.map(function (row) {
+          return numeric.mul(row, eigenValues).splice(0, dimensions);
+      });
+  };
+
+
+  let distanceMatrix = reorder.dist()(this.matrix),
+      cartesianCoords = mds(distanceMatrix, 2),
+      polarCoords = [],
+      xB = reorder.mean(reorder.transpose(cartesianCoords)[0]),
+      yB = reorder.mean(reorder.transpose(cartesianCoords)[1]);
+
+  /* Convert from Cartesian Coordinates System to Polar Coordinates System */
+  for (let points of cartesianCoords) {
+      var x = points[0],
+          y = points[1],
+          r = (Math.sqrt((Math.pow((x - xB), 2) + Math.pow((y - yB), 2))));
+
+      /* I Quadrant */
+      var theta = Math.atan(y / x) * (180 / Math.PI);
+
+      /* II Quadrant */
+      if (Math.sign(x) == -1 && Math.sign(y) == 1) theta += 180;
+
+      /* III Quadrant */
+      if (Math.sign(x) == -1 && Math.sign(y) == -1) theta += 180;
+
+      /* IV Quadrant */
+      if (Math.sign(x) == 1 && Math.sign(y) == -1) theta += 360;
+
+      polarCoords.push([r, theta]);
+  }
+
+  let rowPerm = reorder.sort_order(reorder.transpose(polarCoords)[1]),
+      colPerm = reorder.permutation(this.numberOfCols);
+
+  polarCoords = reorder.permute(polarCoords, rowPerm);
+
+  let max = 0,
+      pair_distance = 0,
+      head = 0;
+
+  for (let i = 0; i < this.numberOfRows - 1; ++i) {
+      for (let j = i + 1; j < this.numberOfCols; ++j, i++) {
+          let theta1 = polarCoords[i][1],
+              theta2 = polarCoords[j][1];
+
+          pair_distance = theta2 - theta1;
+
+          if (pair_distance > max) {
+              max = pair_distance;
+              head = j;
+          } else break;
+      }
+  }
+
+  var circularListPerm = [];
+
+  for (let index in this.matrix) {
+      if (head > this.numberOfRows - 1) head = 0;
+      circularListPerm.push(head++);
+  }
+
+  rowPerm = reorder.permute(rowPerm, circularListPerm).reverse();
+
+  table.order(rowPerm, colPerm);
+}
+
+function blockSort() {
+  let orderOfColumns = [],
+      optimals = [],
+      columns = [];
+
+  const SISTERHOOD_BOUNDARY = 0.6;
+
+  // Get properties of columns:
+  for (let i = 0; i < this.numberOfCols; ++i) {
+      let col = { 'list': [], 'noise': null, 'similarity': null, 'index': i },
+          numberZeros = 0;
+
+      for (let j = 0; j < this.numberOfRows; ++j) {
+          let cellVal = this.matrix[j][i],
+              boolVal = (cellVal >= 0.5);
+          col.list.push(boolVal);
+
+          if (!boolVal) {
+              numberZeros++;
+          }
+      }
+      col.noise = Math.abs((parseFloat(numberZeros - (col.list.length / 2)))) / col.list.length;
+      columns.push(col);
+  }
+
+  function NOISE_RANK(columns) {
+      let NOISE_LIST = [];
+      for (let col of columns) {
+          NOISE_LIST.push(col.noise);
+      }
+      return reorder.sort_order(NOISE_LIST);
+  }
+
+  function SIMILARITY_RANK(columns) {
+      let SIMILARITY_LIST = [];
+      for (let col of columns) {
+          SIMILARITY_LIST.push(col.similarity);
+      }
+      return reorder.sort_order_descending(SIMILARITY_LIST);
+  }
+
+  while (columns.length != 0) {
+      // Current pivot of columns:
+      columns = reorder.permute(columns, NOISE_RANK(columns));
+      var pivot = columns[0];
+
+      // Calc similarity:
+      for (let col of columns) {
+          if (JSON.stringify(col) == JSON.stringify(pivot)) {
+              col.similarity = 1.0;
+          } else {
+              col.similarity = 0.0;
+              for (let j = 0; j < col.list.length; ++j) {
+                  if (pivot.list[j] == col.list[j]) {
+                      col.similarity += 1;
+                  }
+              }
+              col.similarity /= col.list.length;
+          }
+      }
+
+      // Sort by similarity:
+      columns = reorder.permute(columns, SIMILARITY_RANK(columns));
+
+      // Identify sisters:
+      let numberOfSisters = columns.filter((col) => (col.similarity >= SISTERHOOD_BOUNDARY)).length;
+
+      // Populate col perm:
+      for (let col of columns.slice(0, numberOfSisters)) {
+          orderOfColumns.push(col.index);
+      }
+
+      // Make optimal column:
+      let optimal = [];
+      for (let i = 0; i < this.numberOfRows; ++i) {
+          let numberOfZeros = 0;
+          for (let col of columns.slice(0, numberOfSisters)) {
+              if (!col.list[i]) {
+                  numberOfZeros++;
+              }
+          }
+          optimal.push(numberOfZeros < numberOfSisters / 2 ? false : true);
+      }
+
+      optimals.push(optimal);
+
+      // Remove sisters:
+      columns.splice(0, numberOfSisters);
+  }
+
+  // Populate row perm:
+  let orderOfRows = reorder.permutation(this.numberOfRows);
+
+  for (let optimal of optimals.reverse()) {
+      for (let i = 1; i < this.numberOfRows; ++i) {
+          for (let j = i; j > 0; --j) {
+              if (optimal[j] && !optimal[j - 1]) {
+                  for (let auxOptimal of optimals) {
+                      let temp = auxOptimal[j];
+                      auxOptimal[j] = auxOptimal[j - 1];
+                      auxOptimal[j - 1] = temp;
+                  }
+
+                  // Sorts row perm:
+                  let temp = orderOfRows[j];
+                  orderOfRows[j] = orderOfRows[j - 1];
+                  orderOfRows[j - 1] = temp;
+
+              } else {
+                  break;
+              }
+          }
+      }
+  }
+  table.order(orderOfRows, orderOfColumns.reverse());
 }
 
 // Query data treatment to a matrix

@@ -8,6 +8,10 @@ function table(json, width, height, tipo) {
 	n = matrix.length,
 	m = matrix[0].length,
 	i;
+	//adapting vars for new ordering methods
+	numberOfRows = row_labels.length;
+	numberOfCols = col_labels.length;
+
 	color = d3.scaleLinear()
 		.range(['#c7c6c3', "#00cc66", "#ff0000"])
 		.domain([0,1,6]);

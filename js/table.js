@@ -1,4 +1,4 @@
-function table(json, width, height, tipo) {
+function table(json, tipo) {
     var matrix = json.matrix,
 	row_labels = json.row_labels,
 	col_labels = json.col_labels,

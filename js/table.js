@@ -105,8 +105,6 @@ function table(json, width, height, tipo) {
 				.style("left", (d3.mouse(this)[0] + 100) + "px")
 				.style("top", (d3.mouse(this)[1] + 650) + "px")
 		}
-		//console.log('col_labels', col_labels);
-		//console.log('d', d);
 	}
 	let mouseleave = function () {
 		tooltip

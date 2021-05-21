@@ -18,12 +18,10 @@ function selecionaModal(versao,iteracao,data){
 
 function selecionarGrafico(tipo){
   if(primeiroGrafico == true){
-    //console.log("Primeiro gráfico !");
     tipoGrafico = tipo;
     habilitarFiltro(tipo);
     primeiroGrafico = false;
   }else{
-    //console.log("Outros gráficos !");
     tipoGrafico = tipo;
     clicaBotao(tipo);
   }
@@ -37,7 +35,6 @@ function consultaBanco(tipoconsulta){
     data: dataGraf
   }
 
-  console.log(JSON.stringify(dados))
   return fetch('main/consultabanco.php', {
     method: 'POST',
     body: JSON.stringify(dados),
@@ -67,8 +64,6 @@ function subirCSV(arquivo){
   //Primeira Linha
   const linhasArquivo = arquivo.split('\n');
   const linha1 = linhasArquivo[0].split(',');
-
-  console.log(linha1[2]);
 
   let dados = { 
     versao: linha1[0],
@@ -116,7 +111,6 @@ function promessaBanco(dados){
 
   }).then(json => {
 
-      console.log(json);
       resolve(json);
 
     }).catch(error => {

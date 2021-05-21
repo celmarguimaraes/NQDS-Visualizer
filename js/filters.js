@@ -32,8 +32,6 @@ function clicaBotao(tipoGraf){
       clearGraphicArea();
       generateMatrixGraphic(data,maxRangeModels,minRangeModels,tipo);
     }
-    //console.log(data);
-    //console.log(tipoGrafico);
   }).catch( response => {
     console.log(response);
   });
@@ -129,8 +127,6 @@ function divFiltroAtributos(atributos){
     divString += "<div class='form-check form-check-inline'> <input class='form-check-input' type='checkbox' name='filtroAtributos' id='"+atributos[key].Atributo+"' value='"+atributos[key].Atributo+"' checked='true'>";
     divString += "<label class='form-check-label' for='"+atributos[key].Atributo+"'>"+atributos[key].Atributo+"</label> </div>";
   });
-
-  console.log('atributos',atributos);
 
   divString += "</div>";
   divString += "</div>";

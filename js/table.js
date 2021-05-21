@@ -158,12 +158,14 @@ function table(json, width, height, tipo) {
     col.append("line")
 	.attr("x1", -th);
 
-    col.append("text")
-	.attr("x", 6)
-	.attr("y", w / 2)
-	.attr("dy", ".32em")
-	.attr("text-anchor", "start")
-	.text(function(d, i) { return col_labels[i]; });
+	if (col_labels.length < 80){
+		col.append("text")
+		.attr("x", 6)
+		.attr("y", w / 2)
+		.attr("dy", ".32em")
+		.attr("text-anchor", "start")
+		.text(function(d, i) { return col_labels[i]; });
+	}
 
     svg.append("rect")
 	.attr("width", tw)
@@ -177,7 +179,7 @@ function table(json, width, height, tipo) {
 	col_perm = cols;
 	col_inv = reorder.inverse_permutation(col_perm);
 	
-	var t = svg.transition().duration(1500);
+	var t = svg;
 
 	t.selectAll(".row")
             .attr("transform", function(d, i) {
